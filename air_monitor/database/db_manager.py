@@ -1,4 +1,5 @@
 import sqlite3
+from air_monitor.api_client.air_data import fetch_all_data
 
 
 def create_db(c):
@@ -13,7 +14,7 @@ def create_db(c):
     c.execute("""
         CREATE TABLE stations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            station_id INTEGER,
+            station_id INTEGER UNIQUE,
             code TEXT NOT NULL,
             name TEXT NOT NULL,
             lat REAL,
@@ -65,14 +66,51 @@ def create_db(c):
             calc_date TEXT,
             index_level_id INTEGER,
             index_level_name TEXT,
-            FOREIGN KEY (station_id) REFERENCES AirQualityIndex(station_id)
+            FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE
         )
     """)
 
-
     print("Baza danych zostala utworzona.")
 
+
+def save_to_db(data, cursor):
+    """
+    Zapisuje dane pobrane z API do bazy SQLite.
+    :param data: dict zwrócony przez fetch_all_data()
+    """
+    
+
+    for station_entry in data.get('stations', []):
+        station = station_entry['station']
+
+        # cursor.execute("""DELETE FROM stations""")
+        cursor.execute("""
+            INSERT OR REPLACE INTO stations
+            (station_id, code, name, lat, long, city_name, city_id, commune_name, district_name, province_name, street_name)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            station['Identyfikator stacji'],
+            station.get('Kod stacji', None),
+            station['Nazwa stacji'],
+            station.get('WGS84 φ N', None),
+            station.get('WGS84 λ E', None),
+            station.get('Nazwa miasta'),
+            station.get('Identyfikator miasta'),
+            station.get('Gmina'),
+            station.get('Powiat'),
+            station.get('Województwo'),
+            station.get('Ulica', None)
+        ))
+        print(f"Stacje dodane")
+
+
+    print("Dane zostały zapisane do bazy.")
+
+
 if __name__ == "__main__":
-    with sqlite3.connect("baza.db") as connection:
+    with sqlite3.connect("air2.db") as connection:
         c = connection.cursor()
-        create_db(c)
+        # create_db(c)
+        data = fetch_all_data()
+        # conn = sqlite3.connect("air2.db")
+        save_to_db(data, c)
