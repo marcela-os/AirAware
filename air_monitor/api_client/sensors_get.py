@@ -16,4 +16,4 @@ def get_sensors_data(session, station_id, base_url):
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f'Sensor download error for stations {station_id}:', e)
-        return None
+        return {}

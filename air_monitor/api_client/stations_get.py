@@ -15,4 +15,4 @@ def get_stations_data(session, base_url):
         return response.json()
     except requests.exceptions.RequestException as e:
         print('Station download error:', e)
-        return None
+        return {}

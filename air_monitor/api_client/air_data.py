@@ -7,32 +7,56 @@ from air_monitor.api_client.aq_index_get import get_aq_index_data
 __base_url = 'https://api.gios.gov.pl'
 
 
-def main():
+def fetch_all_data():
     """
-    Funkcja pobiera listę stacji pomiarowych z API GIOŚ.
+    Funkcja pobiera dane z API GIOŚ
+    :return: dict
     """
     with requests.Session() as s:
-        stations = get_stations_data(s, __base_url)
-        stations = stations['Lista stacji pomiarowych']
-        if stations:
-            for station in stations[:3]:
-                station_id = station['Identyfikator stacji']
-                sensors = get_sensors_data(s, station_id, __base_url)
-                sensors = sensors['Lista stanowisk pomiarowych dla podanej stacji']
+        stations_response = get_stations_data(s, __base_url)
+        stations = stations_response.get('Lista stacji pomiarowych', [])
 
-                aq_index = get_aq_index_data(s, station_id, __base_url)
-                aq_index = aq_index['AqIndex']
+        if not stations:
+            return []
 
-                print(f'Stacja {station_id}: {sensors}', sep='\n')
-                print(f'Indeks jakości powietrza: {aq_index}')
+        all_data = []
 
-                for sensor in sensors[:3]:
-                    sensor_id = sensor['Identyfikator stanowiska']
-                    measurement = get_measurement_data(s, sensor_id, __base_url)
-                    measurement = measurement['Lista danych pomiarowych']
+        for station in stations:
+            station_id = station['Identyfikator stacji']
+            sensors_response = get_sensors_data(s, station_id, __base_url)
+            sensors = sensors_response.get('Lista stanowisk pomiarowych dla podanej stacji', [])
 
-                    print(f'Dane pomiarowe: {measurement}')
+            aq_index_response = get_aq_index_data(s, station_id, __base_url)
+            aq_index = aq_index_response.get('AqIndex', {})
+
+            station_entry = {
+                'station': station,
+                'aq_index': aq_index,
+                'sensors': []
+            }
+
+            for sensor in sensors:
+                sensor_id = sensor['Identyfikator stanowiska']
+                measurement = get_measurement_data(s, sensor_id, __base_url)
+
+                if 'Lista danych pomiarowych' in measurement:
+                    measurement_data = measurement['Lista danych pomiarowych']
+                elif 'error_result' in measurement:
+                    measurement_data = measurement['error_result']
+                else:
+                    measurement_data = None
+
+                sensor_entry = {
+                    'sensor': sensor,
+                    'measurement': measurement_data
+                }
+                station_entry['sensors'].append(sensor_entry)
+
+            all_data.append(station_entry)
+
+        return {'stations': all_data}
 
 
 if __name__ == '__main__':
-    main()
+    x = fetch_all_data()
+    print(x)

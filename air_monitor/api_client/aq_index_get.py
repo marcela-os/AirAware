@@ -16,4 +16,4 @@ def get_aq_index_data(session, station_id, base_url):
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f'Air quality index download error for stations {station_id}:', e)
-        return None
+        return {}
