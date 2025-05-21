@@ -14,7 +14,7 @@ def create_db(c):
     c.execute("""
         CREATE TABLE stations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            station_id INTEGER UNIQUE,
+            station_id INTEGER PRIMARY KEY AUTOINCREMENT,
             code TEXT NOT NULL,
             name TEXT NOT NULL,
             lat REAL,
@@ -30,7 +30,7 @@ def create_db(c):
     c.execute("""
         CREATE TABLE sensor (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sensor_id INTEGER,
+            sensor_id INTEGER PRIMARY KEY AUTOINCREMENT,
             station_id INTEGER,
             indicator TEXT NOT NULL,
             symbol TEXT NOT NULL,
@@ -78,11 +78,10 @@ def save_to_db(data, cursor):
     Zapisuje dane pobrane z API do bazy SQLite.
     :param data: dict zwrócony przez fetch_all_data()
     """
-    
 
     for station_entry in data.get('stations', []):
         station = station_entry['station']
-
+        aq_index = station_entry.get('aq_index', {})
         # cursor.execute("""DELETE FROM stations""")
         cursor.execute("""
             INSERT OR REPLACE INTO stations
@@ -101,8 +100,27 @@ def save_to_db(data, cursor):
             station.get('Województwo'),
             station.get('Ulica', None)
         ))
-        print(f"Stacje dodane")
-
+        # cursor.execute("""DELETE FROM aq_index""")
+        # Pobranie id z tabeli stations
+        # c.execute("SELECT id FROM stations WHERE station_id = ?", (station['Identyfikator stacji'],))
+        # station_db_id = c.fetchone()[0]
+        cursor.execute("""
+            INSERT OR REPLACE INTO aq_index
+            (station_id, index_id, indexLevelName, stCalcDate, stSourceDataDate, stIndexCrParam)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            station['Identyfikator stacji'],
+            # aq_index.get('Wartość indeksu', None),
+            # aq_index.get('Nazwa kategorii indeksu', None),
+            # aq_index.get('Data wykonania obliczeń indeksu', None),
+            # aq_index.get('Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika st', None),
+            # aq_index.get('Kod zanieczyszczenia krytycznego', None)
+            aq_index['value_index'],
+            aq_index['category_name'],
+            aq_index['calc_date'],
+            aq_index['source_data_date'],
+            aq_index['critical_pollution_code']
+        ))
 
     print("Dane zostały zapisane do bazy.")
 

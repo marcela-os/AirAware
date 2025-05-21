@@ -27,11 +27,11 @@ def fetch_all_data():
             sensors = sensors_response.get('Lista stanowisk pomiarowych dla podanej stacji', [])
 
             aq_index_response = get_aq_index_data(s, station_id, __base_url)
-            aq_index = aq_index_response.get('AqIndex', {})
+            # aq_index = aq_index_response.get('AqIndex', {})
 
             station_entry = {
                 'station': station,
-                'aq_index': aq_index,
+                'aq_index': aq_index_response,
                 'sensors': []
             }
 
@@ -50,6 +50,7 @@ def fetch_all_data():
                     'sensor': sensor,
                     'measurement': measurement_data
                 }
+                # print(">>> ", station_entry['aq_index'])
                 station_entry['sensors'].append(sensor_entry)
 
             all_data.append(station_entry)
@@ -59,4 +60,4 @@ def fetch_all_data():
 
 if __name__ == '__main__':
     x = fetch_all_data()
-    print(x)
+    # print(x)
