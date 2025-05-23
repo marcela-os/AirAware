@@ -20,7 +20,7 @@ def get_sensors_data(session, station_id, base_url):
         processed_sensors = []
         for sensor in sensors:
             sensor_info = {
-                'sensor_id': safe_get(sensor, 'Identyfikator stanowiska'),
+                'detector_id': safe_get(sensor, 'Identyfikator stanowiska'),
                 'station_id': safe_get(sensor, 'Identyfikator stacji'),
                 'indicator': safe_get(sensor, 'Wskaźnik'),
                 'symbol': safe_get(sensor, 'Wskaźnik - wzór'),

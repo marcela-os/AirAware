@@ -25,30 +25,22 @@ def fetch_all_data():
             station_id = station['station_id']
             sensors = get_sensors_data(s, station_id, __base_url)
 
-            aq_index_response = get_aq_index_data(s, station_id, __base_url)
+            aq_index = get_aq_index_data(s, station_id, __base_url)
 
             station_entry = {
                 'station': station,
-                'aq_index': aq_index_response,
+                'aq_index': aq_index,
                 'sensors': []
             }
 
             for sensor in sensors:
-                sensor_id = sensor['sensor_id']
-                # measurement = get_measurement_data(s, sensor_id, __base_url)
-
-                # if 'Lista danych pomiarowych' in measurement:
-                #     measurement_data = measurement['Lista danych pomiarowych']
-                # elif 'error_result' in measurement:
-                #     measurement_data = measurement['error_result']
-                # else:
-                #     measurement_data = None
+                sensor_id = sensor['detector_id']
+                measurement = get_measurement_data(s, sensor_id, __base_url)
 
                 sensor_entry = {
                     'sensor': sensor,
-                    # 'measurement': measurement_data
+                    'measurement': measurement
                 }
-                # print(">>> ", station_entry['aq_index'])
                 station_entry['sensors'].append(sensor_entry)
 
             all_data.append(station_entry)

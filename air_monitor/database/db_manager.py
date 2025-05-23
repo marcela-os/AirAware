@@ -28,7 +28,7 @@ def create_db(c):
     """)
     c.execute("""
         CREATE TABLE detector (
-            sensor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            detector_id INTEGER PRIMARY KEY AUTOINCREMENT,
             station_id INTEGER,
             indicator TEXT NOT NULL,
             symbol TEXT NOT NULL,
@@ -40,10 +40,11 @@ def create_db(c):
     c.execute("""
         CREATE TABLE measurement (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sensor_id INTEGER,
-            date TEXT,
+            position_code TEXT NOT NULL,
+            date TEXT NOT NULL,
             value REAL,
-            FOREIGN KEY (sensor_id) REFERENCES sensor(id) ON DELETE CASCADE
+            detector_id INTEGER NOT NULL,
+            FOREIGN KEY (detector_id) REFERENCES detector(id) ON DELETE CASCADE
         )
     """)
     c.execute("""
@@ -115,24 +116,38 @@ def save_to_db(data, cursor):
             aq_index['critical_pollution_code']
         ))
 
-        # --- Wstawianie sensorów i pomiarów ---
+        # --- Wstawianie sensorów ---
         for detector_entry in station_entry.get('sensors', []):
             detector = detector_entry['sensor']
+            measurement_data = detector_entry['measurement']
             print(detector_entry)
-            measurement_data = detector_entry.get('measurement')
 
             cursor.execute("""
                 INSERT OR REPLACE INTO detector
-                (sensor_id, station_id, indicator, symbol, code, factor_id)
+                (detector_id, station_id, indicator, symbol, code, factor_id)
                 VALUES (?, ?, ?, ?, ?, ?)
             """, (
-                detector['sensor_id'],
+                detector['detector_id'],
                 detector['station_id'],
                 detector['indicator'],
                 detector['symbol'],
                 detector['code'],
                 detector['factor_id'],
             ))
+
+            # --- Wstawianie pomiarów ---
+            if isinstance(measurement_data, list):
+                print("in")
+                for measurement in measurement_data:
+                    c.execute("""
+                        INSERT OR REPLACE INTO measurement (position_code, date, value, detector_id)
+                        VALUES (?, ?, ?, ?)
+                    """, (
+                        measurement['position_code'],
+                        measurement['date'],
+                        measurement['value'],
+                        detector['detector_id']
+                    ))
 
     print("Dane zostały zapisane do bazy.")
 
@@ -142,16 +157,16 @@ if __name__ == "__main__":
         c = connection.cursor()
         # create_db(c)
         data = fetch_all_data()
-        # # conn = sqlite3.connect("air2.db")
+        # # # # conn = sqlite3.connect("air2.db")
         save_to_db(data, c)
         connection.commit()
 
 
-        #usuwanie kolumn z db
-        # tables = ['sensor', 'station', 'measurement', 'aq_indexParam',]  # przykładowe tabele
-        #
-        # for table in tables:
-        #     c.execute(f'DROP TABLE IF EXISTS "{table}"')
+       # # usuwanie kolumn z db
+       #  tables = ['aq_indexParam', 'stations', 'detector', 'measurement', 'aq_index']  # przykładowe tabele
+       #
+       #  for table in tables:
+       #      c.execute(f'DROP TABLE IF EXISTS "{table}"')
 
 
 
