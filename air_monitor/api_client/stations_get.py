@@ -14,24 +14,6 @@ def get_stations_data(session, base_url):
         response = session.get(endpoint, timeout=5)
         response.raise_for_status()
         stations = response.json().get('Lista stacji pomiarowych')
-        # print("Stacje:", stations)
-        # print("Typ pierwszej stacji:", type(stations[0]))
-        # print("Zawartość pierwszej stacji:", stations[0])
-        # return {
-        #     'station_id': safe_get(data, 'Identyfikator stacji'),
-        #     'station_code': safe_get(data, 'Kod stacji'),
-        #     'station_name': safe_get(data, 'Nazwa stacji'),
-        #     'lat': safe_get(data,'WGS84 φ N'),
-        #     'long': safe_get(data, 'WGS84 λ E'),
-        #     'city_name': safe_get(data, 'Nazwa miasta'),
-        #     'city_id': safe_get(data, 'Identyfikator miasta'),
-        #     'commune': safe_get(data, 'Gmina'),
-        #     'district': safe_get(data, 'Powiat'),
-        #     'province': safe_get(data, 'Województwo'),
-        #     'street': safe_get(data, 'Ulica'),
-        #
-        # }
-        #
         processed_stations = []
         for station in stations:
             station_info = {

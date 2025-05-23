@@ -6,14 +6,13 @@ def create_db(c):
     """Tworzy tabele stacji pomiarowych. Jesli istnieja, usuwa je przed stworzeniem nowych."""
     c.execute("DROP TABLE IF EXISTS air_monitor")
     c.execute("DROP TABLE IF EXISTS measurement")
-    c.execute("DROP TABLE IF EXISTS sensor")
+    c.execute("DROP TABLE IF EXISTS detector")
     c.execute("DROP TABLE IF EXISTS aq_index_param")
     c.execute("DROP TABLE IF EXISTS aq_index")
     c.execute("DROP TABLE IF EXISTS stations")
 
     c.execute("""
         CREATE TABLE stations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
             station_id INTEGER PRIMARY KEY AUTOINCREMENT,
             code TEXT NOT NULL,
             name TEXT NOT NULL,
@@ -28,8 +27,7 @@ def create_db(c):
         )
     """)
     c.execute("""
-        CREATE TABLE sensor (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE detector (
             sensor_id INTEGER PRIMARY KEY AUTOINCREMENT,
             station_id INTEGER,
             indicator TEXT NOT NULL,
@@ -117,6 +115,25 @@ def save_to_db(data, cursor):
             aq_index['critical_pollution_code']
         ))
 
+        # --- Wstawianie sensorów i pomiarów ---
+        for detector_entry in station_entry.get('sensors', []):
+            detector = detector_entry['sensor']
+            print(detector_entry)
+            measurement_data = detector_entry.get('measurement')
+
+            cursor.execute("""
+                INSERT OR REPLACE INTO detector
+                (sensor_id, station_id, indicator, symbol, code, factor_id)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                detector['sensor_id'],
+                detector['station_id'],
+                detector['indicator'],
+                detector['symbol'],
+                detector['code'],
+                detector['factor_id'],
+            ))
+
     print("Dane zostały zapisane do bazy.")
 
 
@@ -125,5 +142,16 @@ if __name__ == "__main__":
         c = connection.cursor()
         # create_db(c)
         data = fetch_all_data()
-        # conn = sqlite3.connect("air2.db")
+        # # conn = sqlite3.connect("air2.db")
         save_to_db(data, c)
+        connection.commit()
+
+
+        #usuwanie kolumn z db
+        # tables = ['sensor', 'station', 'measurement', 'aq_indexParam',]  # przykładowe tabele
+        #
+        # for table in tables:
+        #     c.execute(f'DROP TABLE IF EXISTS "{table}"')
+
+
+
