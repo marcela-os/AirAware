@@ -13,21 +13,20 @@ def fetch_all_data():
     :return: dict
     """
     with requests.Session() as s:
-        stations_response = get_stations_data(s, __base_url)
-        stations = stations_response.get('Lista stacji pomiarowych', [])
-
+        # print("Print", get_stations_data(s, __base_url))
+        stations = get_stations_data(s, __base_url)
+        # stations = stations_response.get('Lista stacji pomiarowych')
         if not stations:
             return []
 
         all_data = []
 
         for station in stations:
-            station_id = station['Identyfikator stacji']
+            station_id = station['station_id']
             sensors_response = get_sensors_data(s, station_id, __base_url)
             sensors = sensors_response.get('Lista stanowisk pomiarowych dla podanej stacji', [])
 
             aq_index_response = get_aq_index_data(s, station_id, __base_url)
-            # aq_index = aq_index_response.get('AqIndex', {})
 
             station_entry = {
                 'station': station,

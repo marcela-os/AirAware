@@ -88,17 +88,17 @@ def save_to_db(data, cursor):
             (station_id, code, name, lat, long, city_name, city_id, commune_name, district_name, province_name, street_name)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            station['Identyfikator stacji'],
-            station.get('Kod stacji', None),
-            station['Nazwa stacji'],
-            station.get('WGS84 φ N', None),
-            station.get('WGS84 λ E', None),
-            station.get('Nazwa miasta'),
-            station.get('Identyfikator miasta'),
-            station.get('Gmina'),
-            station.get('Powiat'),
-            station.get('Województwo'),
-            station.get('Ulica', None)
+            station['station_id'],
+            station['station_code'],
+            station['station_name'],
+            station['lat'],
+            station['long'],
+            station['city_name'],
+            station['city_id'],
+            station['commune'],
+            station['district'],
+            station['province'],
+            station['street'],
         ))
         # cursor.execute("""DELETE FROM aq_index""")
         # Pobranie id z tabeli stations
@@ -109,12 +109,7 @@ def save_to_db(data, cursor):
             (station_id, index_id, indexLevelName, stCalcDate, stSourceDataDate, stIndexCrParam)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (
-            station['Identyfikator stacji'],
-            # aq_index.get('Wartość indeksu', None),
-            # aq_index.get('Nazwa kategorii indeksu', None),
-            # aq_index.get('Data wykonania obliczeń indeksu', None),
-            # aq_index.get('Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika st', None),
-            # aq_index.get('Kod zanieczyszczenia krytycznego', None)
+            station['station_id'],
             aq_index['value_index'],
             aq_index['category_name'],
             aq_index['calc_date'],
