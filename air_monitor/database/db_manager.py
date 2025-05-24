@@ -62,7 +62,9 @@ def create_db(c):
     c.execute("""
         CREATE TABLE aq_indexParam (
             station_id INTEGER,
+            param_name TEXT,
             calc_date TEXT,
+            source_date TEXT,
             index_level_id INTEGER,
             index_level_name TEXT,
             FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE
@@ -82,6 +84,8 @@ def save_to_db(data, cursor):
         station = station_entry['station']
         aq_index = station_entry.get('aq_index', {})
         # cursor.execute("""DELETE FROM stations""")
+
+        # --- Wstawianie stacji ---
         cursor.execute("""
             INSERT OR REPLACE INTO stations
             (station_id, code, name, lat, long, city_name, city_id, commune_name, district_name, province_name, street_name)
@@ -103,6 +107,8 @@ def save_to_db(data, cursor):
         # Pobranie id z tabeli stations
         # c.execute("SELECT id FROM stations WHERE station_id = ?", (station['Identyfikator stacji'],))
         # station_db_id = c.fetchone()[0]
+
+        # --- Wstawianie indeksu jakości powietrza ---
         cursor.execute("""
             INSERT OR REPLACE INTO aq_index
             (station_id, index_id, indexLevelName, stCalcDate, stSourceDataDate, stIndexCrParam)
@@ -115,6 +121,22 @@ def save_to_db(data, cursor):
             aq_index['source_data_date'],
             aq_index['critical_pollution_code']
         ))
+
+        # --- Wstawianie parametrów indeksu jakości powietrza ---
+        # cursor.execute("""DELETE FROM aq_indexParam""")
+        for param_name, param_data in aq_index['param'].items():
+            cursor.execute("""
+            INSERT OR REPLACE INTO aq_indexParam (station_id, param_name, calc_date, source_date, index_level_id, index_level_name)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                aq_index['station_id'],
+                param_name,
+                param_data['calcs_date'],
+                param_data['source_date'],
+                param_data['index_value'],
+                param_data['index_category_name']
+            ))
+
 
         # --- Wstawianie sensorów ---
         for detector_entry in station_entry.get('sensors', []):
@@ -155,13 +177,13 @@ if __name__ == "__main__":
         c = connection.cursor()
         # create_db(c)
         data = fetch_all_data()
-        # # # # conn = sqlite3.connect("air2.db")
+        # # # conn = sqlite3.connect("air2.db")
         save_to_db(data, c)
         connection.commit()
 
 
        # # usuwanie kolumn z db
-       #  tables = ['aq_indexParam', 'stations', 'detector', 'measurement', 'aq_index']  # przykładowe tabele
+       #  tables = ['aq_indexParam', 'stations', 'detector', 'measurement', 'aq_index']
        #
        #  for table in tables:
        #      c.execute(f'DROP TABLE IF EXISTS "{table}"')
