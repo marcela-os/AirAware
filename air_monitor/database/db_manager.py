@@ -108,7 +108,7 @@ def save_to_db(data, cursor):
             (station_id, index_id, indexLevelName, stCalcDate, stSourceDataDate, stIndexCrParam)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (
-            station['station_id'],
+            aq_index['station_id'],
             aq_index['value_index'],
             aq_index['category_name'],
             aq_index['calc_date'],
@@ -120,7 +120,6 @@ def save_to_db(data, cursor):
         for detector_entry in station_entry.get('sensors', []):
             detector = detector_entry['sensor']
             measurement_data = detector_entry['measurement']
-            print(detector_entry)
 
             cursor.execute("""
                 INSERT OR REPLACE INTO detector
@@ -137,7 +136,6 @@ def save_to_db(data, cursor):
 
             # --- Wstawianie pomiarów ---
             if isinstance(measurement_data, list):
-                print("in")
                 for measurement in measurement_data:
                     c.execute("""
                         INSERT OR REPLACE INTO measurement (position_code, date, value, detector_id)
