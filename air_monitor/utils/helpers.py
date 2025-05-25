@@ -12,5 +12,5 @@ def safe_get(data, field):
     :return: value lub 'None'
     """
     value = data.get(field)
-    return value if value not in (None, [], '', {}) else 'None'
+    return value if value not in (None, [], '', {}) else None
 
