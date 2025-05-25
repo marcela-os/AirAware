@@ -1,23 +1,62 @@
 import sqlite3
+import requests
+
 from air_monitor.api_client.air_data import fetch_all_data
+
+
+def get_data():
+    """
+    Pobiera dane pomiarowe jakości powietrza zgodnie z następującą logiką:
+
+    1. Próbuje połączyć się z lokalną bazą danych SQLite (air2.db).
+    2. Tworzy wymagane tabele, jeśli jeszcze nie istnieją.
+    3. Próbuje pobrać dane z zewnętrznego API (GIOŚ):
+       - Jeśli dane są dostępne i poprawne, zapisuje je do bazy i zwraca.
+       - Jeśli wystąpi błąd połączenia lub danych, zgłasza odpowiedni komunikat.
+    4. W przypadku błędu połączenia z bazą zwraca komunikat o błędzie.
+
+    Returns:
+        dict | str:
+            - Dane pobrane z API jako słownik, jeśli wszystko się powiedzie.
+            - Komunikat błędu jako string, jeśli wystąpi problem z połączeniem lub przetwarzaniem danych.
+
+    Raises:
+        Brak bezpośredniego rzucania wyjątków — wszystkie obsługiwane wewnętrznie.
+    :return:
+    """
+    try:
+        with sqlite3.connect("air.db") as connection:
+            c = connection.cursor()
+            create_db(c)
+            try:
+                data = fetch_all_data()
+                if not isinstance(data, dict):
+                    raise TypeError("The API returned an incorrect data type - a dictionary was expected.")
+
+                if 'stations' in data:
+                    save_to_db(data, c)
+                    connection.commit()
+                    print('Data downloaded from the API and saved.')
+                    return data
+                else:
+                    raise ValueError('Stations not found in the data')
+            except (ValueError, KeyError, TypeError) as data_err:
+                print(f'API data error: {data_err}')
+                return f'API data processing error: {data_err}'
+
+    except sqlite3.Error as db_err:
+        return f'Database error: {db_err}'
 
 
 def create_db(c):
     """
-    Tworzy tabele stacji pomiarowych. Jesli istnieja, usuwa je przed stworzeniem nowych.
+    Funkcja sprawdza czy tabela o podanej nazwie istnieje a jeśli nie to tworzy ją.
     :param c: sqlite3.Cursor
     :return: None
     """
 
-    c.execute("DROP TABLE IF EXISTS air_monitor")
-    c.execute("DROP TABLE IF EXISTS measurement")
-    c.execute("DROP TABLE IF EXISTS detector")
-    c.execute("DROP TABLE IF EXISTS aq_index_param")
-    c.execute("DROP TABLE IF EXISTS aq_index")
-    c.execute("DROP TABLE IF EXISTS stations")
-
     c.execute("""
-        CREATE TABLE stations (
+        CREATE TABLE IF NOT EXISTS stations (
             station_id INTEGER PRIMARY KEY,
             code TEXT NOT NULL,
             name TEXT NOT NULL,
@@ -32,7 +71,7 @@ def create_db(c):
         )
     """)
     c.execute("""
-        CREATE TABLE detector (
+        CREATE TABLE IF NOT EXISTS detectors (
             detector_id INTEGER PRIMARY KEY AUTOINCREMENT,
             station_id INTEGER,
             indicator TEXT NOT NULL,
@@ -43,7 +82,7 @@ def create_db(c):
         )
     """)
     c.execute("""
-        CREATE TABLE measurement (
+        CREATE TABLE IF NOT EXISTS measurement (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             position_code TEXT NOT NULL,
             date TEXT NOT NULL,
@@ -54,7 +93,7 @@ def create_db(c):
         )
     """)
     c.execute("""
-        CREATE TABLE aq_index (
+        CREATE TABLE IF NOT EXISTS aq_index (
             station_id INTEGER,
             index_id INTEGER,
             indexLevelName TEXT NOT NULL,
@@ -67,7 +106,7 @@ def create_db(c):
     """)
 
     c.execute("""
-        CREATE TABLE aq_indexParam (
+        CREATE TABLE IF NOT EXISTS aq_indexParam (
             station_id INTEGER,
             param_name TEXT,
             calc_date TEXT,
@@ -79,7 +118,7 @@ def create_db(c):
         )
     """)
 
-    print("Baza danych zostala utworzona.")
+    print("The database has been created.")
 
 
 def save_to_db(data, cursor):
@@ -89,22 +128,23 @@ def save_to_db(data, cursor):
     :param cursor: sqlite3.Cursor
     :return: None
     """
+    if data.get('stations', []):
+        for station_entry in data.get('stations', []):
+            station = station_entry['station']
+            aq_index = station_entry.get('aq_index', {})
+            # cursor.execute("""DELETE FROM stations""")
 
-    for station_entry in data.get('stations', []):
-        station = station_entry['station']
-        aq_index = station_entry.get('aq_index', {})
-        # cursor.execute("""DELETE FROM stations""")
+            # --- Wstawianie stacji ---
+            save_stations(cursor, station)
+            # --- Wstawianie indeksu jakości powietrza ---
+            save_aq_index(cursor, aq_index)
+            # --- Wstawianie parametrów indeksu jakości powietrza ---
+            save_aq_index_param(cursor, aq_index)
+            # --- Wstawianie sensorów ---
+            detectors = station_entry.get('sensors', [])
+            save_detectors_and_measurements(cursor, detectors)
 
-        # --- Wstawianie stacji ---
-        save_stations(cursor, station)
-        # --- Wstawianie indeksu jakości powietrza ---
-        save_aq_index(cursor, aq_index)
-        # --- Wstawianie parametrów indeksu jakości powietrza ---
-        save_aq_index_param(cursor, aq_index)
-        # --- Wstawianie sensorów ---
-        detectors = station_entry.get('sensors', [])
-        save_detectors_and_measurements(cursor, detectors)
-    print("Dane zostały zapisane do bazy.")
+        print('The data was saved to the database.')
 
 
 def save_stations(cursor, station):
@@ -191,7 +231,7 @@ def save_detectors_and_measurements(cursor, detectors):
         measurement_data = detector_entry['measurement']
 
         cursor.execute("""
-            INSERT OR REPLACE INTO detector
+            INSERT OR REPLACE INTO detectors
             (detector_id, station_id, indicator, symbol, code, factor_id)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (
@@ -206,7 +246,7 @@ def save_detectors_and_measurements(cursor, detectors):
         # --- Wstawianie pomiarów ---
         if isinstance(measurement_data, list):
             for measurement in measurement_data:
-                c.execute("""
+                cursor.execute("""
                     INSERT OR IGNORE INTO measurement (position_code, date, value, detector_id)
                     VALUES (?, ?, ?, ?)
                 """, (
@@ -218,16 +258,11 @@ def save_detectors_and_measurements(cursor, detectors):
 
 
 if __name__ == "__main__":
-    with sqlite3.connect("air2.db") as connection:
-        c = connection.cursor()
-        # create_db(c)
-        data = fetch_all_data()
-        # # # conn = sqlite3.connect("air2.db")
-        save_to_db(data, c)
-        connection.commit()
+    get_data()
+    # print("🔁 Wynik funkcji get_data():", result)
 
-    # # usuwanie kolumn z db
-    #  tables = ['aq_indexParam', 'stations', 'detector', 'measurement', 'aq_index']
+    # usuwanie kolumn z db
+    # tables = ['aq_indexParam', 'stations', 'detectors', 'measurement', 'aq_index']
     #
-    #  for table in tables:
-    #      c.execute(f'DROP TABLE IF EXISTS "{table}"')
+    # for table in tables:
+    #     c.execute(f'DROP TABLE IF EXISTS "{table}"')

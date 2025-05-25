@@ -13,3 +13,4 @@ def safe_get(data, field):
     """
     value = data.get(field)
     return value if value not in (None, [], '', {}) else 'None'
+

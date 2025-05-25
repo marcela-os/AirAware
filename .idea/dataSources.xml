@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="air2" uuid="fdbb381b-633d-46b6-a985-2d310a1359c1">
+    <data-source source="LOCAL" name="air" uuid="eee1b267-09ce-42ea-93c2-33c2e9a763f2">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/air_monitor/database/air2.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/air_monitor/database/air.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

@@ -13,11 +13,9 @@ def fetch_all_data():
     :return: dict
     """
     with requests.Session() as s:
-        # print("Print", get_stations_data(s, __base_url))
         stations = get_stations_data(s, __base_url)
-        # stations = stations_response.get('Lista stacji pomiarowych')
         if not stations:
-            return []
+            return {}
 
         all_data = []
 
@@ -45,6 +43,8 @@ def fetch_all_data():
 
             all_data.append(station_entry)
 
+        if not all_data:
+            return {'stations': []}
         return {'stations': all_data}
 
 
