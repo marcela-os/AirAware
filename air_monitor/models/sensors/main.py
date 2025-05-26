@@ -7,10 +7,6 @@ if __name__ == '__main__':
     from convert.converter import converter_sensors
     data = fetch_all_data()
     sensors = converter_sensors(data)
-    # print(sensors)
-    # print(sensors[0])
-    # print(data['stations'][0]['sensors'][0]['sensor']['detector_id'])
-    # print(data['stations'][0]['sensors'][0]['measurement'])
 
     print('CZY RÓWNE?')
     print(sensors[0].sensor_id == data['stations'][0]['sensors'][0]['sensor']['detector_id'])
