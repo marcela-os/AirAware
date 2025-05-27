@@ -1,15 +1,15 @@
-from air_monitor.models.measurment.model.data import Data
-from air_monitor.models.measurment.model.value import Value
+from air_monitor.models.measurement.model.data import Data
+from air_monitor.models.measurement.model.value import Value
 
 
-def converter_measurment(data):
+def converter_measurement(data):
     """
     Funkcja umożliwiająca konwersję danych do modelu obiektowego.
     :param data: dict
     :return: list[Value]
     """
 
-    measurment = []
+    measurement = []
     if data.get('stations', []):
         for station_entry in data.get('stations', []):
             for detector_entry in station_entry.get('sensors', []):
@@ -31,6 +31,6 @@ def converter_measurment(data):
                         detector_id,
                         values
                     )
-                    measurment.append(data_obj)
+                    measurement.append(data_obj)
 
-    return measurment
+    return measurement
