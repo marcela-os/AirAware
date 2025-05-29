@@ -1,8 +1,4 @@
-from air_monitor.database.data_handler import get_data
-
-def main():
-
-    get_data()
+from gui.main import launch_gui
 
 if __name__ == "__main__":
-    main()
+    launch_gui()

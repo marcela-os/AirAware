@@ -9,7 +9,7 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 database_path = os.path.join(file_path, "air.db")
 
-def get_data():
+def get_data_handler():
     """
     Funkcja pobiera dane z API, tworzy bazę danych (jeśli nie istnieje) i zapisuje dane.
     :return: tuple[list, list, list, list]
