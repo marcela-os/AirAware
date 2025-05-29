@@ -26,12 +26,12 @@ class Value:
             self.__value = None
 
     @property
-    def date(self):
-        return self.__date_value.date()
+    def date_value(self):
+        return self.__date_value
 
-    @property
-    def time(self):
-        return self.__date_value.time()
+    # @property
+    # def time(self):
+    #     return self.__date_value.time()
 
     @property
     def code(self):
@@ -43,9 +43,8 @@ class Value:
 
     def __str__(self):
         date_value_str = self.__date_value.strftime('%Y-%m-%d %H:%M:%S') if self.__date_value else 'None'
-        return f'Date: {date_value_str}, Value: {self.__value}, Position Code: {self.__code}'
+        return f'Position Code: {self.__code}, Date: {date_value_str}, Value: {self.__value}'
 
     def __repr__(self):
         date_value_str = self.__date_value.strftime('%Y-%m-%d %H:%M:%S') if self.__date_value else 'None'
-        return (f"Value ('{date_value_str}', "
-                f" {self.__value}, '{self.code}')")
+        return f"Value ('{self.code}', '{date_value_str}', {self.__value})"

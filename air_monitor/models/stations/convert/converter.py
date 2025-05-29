@@ -22,6 +22,7 @@ def converter_station(data):
             city = City(
                 station_data['city_name'],
                 station_data['city_id'],
+                station_data['street'],
                 commune)
             station = Station(
                 station_data['station_name'],

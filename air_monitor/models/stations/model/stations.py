@@ -40,15 +40,15 @@ class Station:
 
     def __str__(self):
         return (f'Station {self.name}, Station ID: {self.id}, Station code: {self.code} Geo: ({self.lat}, {self.lon}), '
-                f'City: {self.city}, Commune: {self.city.commune} ')
+                f'City: {self.city}')
 
     def __repr__(self):
-        return f"{self.__class__.__name__}('{self.name}', {self.id}, {self.code}, {self.lat}, {self.lon}, City: {self.city!r}, Commune: {self.city.commune!r})"
+        return f"{self.__class__.__name__} ('{self.name}', {self.id}, {self.code}, {self.lat}, {self.lon}, City: {self.city!r})"
 
     def __eq__(self, other):
         return isinstance(other, Station) and (
             self.name, self.id, self.code, self.lat, self.lon, self.city, self.city.commune
-        ) == (other.name, other.id, other.code, other.lat, other.lon, other.city, other.city.commune)
+        ) == (other.name, other.id, other.code, other.lat, other.lon, other.city)
 
     def __hash__(self):
-        return hash((self.name, self.id, self.code, self.lat, self.lon, self.city, self.city.commune))
+        return hash((self.name, self.id, self.code, self.lat, self.lon, self.city))

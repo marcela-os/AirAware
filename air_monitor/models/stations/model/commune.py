@@ -30,7 +30,7 @@ class Commune:
         return f'{self.name}, District: {self.district}, Province: {self.province.capitalize()}'
 
     def __repr__(self):
-        return f"{self.__class__.__name__}('{self.name}', '{self.district}', '{self.province}')"
+        return f"{self.__class__.__name__} ('{self.name}', '{self.district}', '{self.province}')"
 
     def __eq__(self, other):
         return isinstance(other, Commune) and (
