@@ -4,6 +4,7 @@ from taipy.gui import Icon
 from taipy import Config
 import datetime
 import sqlite3
+import pandas as pd
 
 dates = [
     datetime.datetime(2024, 1, 1),
@@ -14,22 +15,14 @@ company = "10"
 
 
 def fetch_stations():
-    c = sqlite3.connect("air_monitor/database/air.db")
-    cursor = c.cursor()
-    cursor.execute("SELECT name, station_id FROM stations")
-    all_tabels = cursor.fetchall()
-    names = [row for row in all_tabels]
-    c.close()
-    return names
+    with sqlite3.connect("air_monitor/database/air.db") as conn:
+        all_stations = pd.read_sql_query("SELECT name, station_id FROM stations", conn)
+    return all_stations.values.tolist()  # jeśli potrzebujesz listy tak jak wcześniej
 
 def fetch_detectors():
-    c = sqlite3.connect("air_monitor/database/air.db")
-    cursor = c.cursor()
-    cursor.execute("SELECT station_id, detector_id, indicator,symbol FROM detectors")
-    all_tabels = cursor.fetchall()
-    detectors = [row for row in all_tabels]
-    c.close()
-    return detectors
+    with sqlite3.connect("air_monitor/database/air.db") as conn:
+        all_detectors = pd.read_sql_query("SELECT station_id, detector_id, indicator, symbol FROM detectors", conn)
+        return all_detectors.values.tolist()
 
 detectors = fetch_detectors()
 stations = fetch_stations()
