@@ -184,7 +184,7 @@ def save_detectors_and_measurements(cursor, detectors, measurements):
             detector.sensor_id,
             detector.station_id,
             detector.param.name,
-            detector.param.name,
+            detector.param.formula,
             detector.param.code,
             detector.param.param_id,
         ))
