@@ -1,0 +1,13 @@
+# Ignorowanie środowiska wirtualnego
+.venv/
+# Ignorowanie PyCharm / IntelliJ
+.idea/
+
+# Ignorowanie plików cache Pythona
+__pycache__/
+*.py[cod]
+
+# Logi i lokalna baza danych
+*.log
+*.sqlite3
+*.db
