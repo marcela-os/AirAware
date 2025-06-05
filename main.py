@@ -2,47 +2,69 @@ import taipy as tp
 import taipy.gui.builder as tgb
 from taipy.gui import Icon
 from taipy import Config
-import datetime
 import sqlite3
 import pandas as pd
 import plotly.graph_objs as go
-import datetime
 from datetime import datetime
 
-
+# Aktualna data
 x = datetime.now().date()
-print(x)
-
-
 
 dates = [
     datetime(2024, 1, 1),
     datetime(2025, 1, 1),
 ]
-
+# Początkowy pusty wykres
 display_figure = go.Figure()
 
 
 def fetch_stations():
+    """
+    Pobiera wszystkie stacje z bazy danych.
+    :return: list
+    """
+
     with sqlite3.connect("air_monitor/database/air.db") as conn:
         all_stations = pd.read_sql_query("SELECT name, station_id FROM stations", conn)
-    return all_stations.values.tolist()  # jeśli potrzebujesz listy tak jak wcześniej
+    return all_stations.values.tolist()
+
 
 def fetch_detectors():
+    """
+    Pobiera wszystkie detektory z bazy danych.
+    :return: list
+    """
+
     with sqlite3.connect("air_monitor/database/air.db") as conn:
         all_detectors = pd.read_sql_query("SELECT station_id, detector_id, indicator, symbol FROM detectors", conn)
         return all_detectors.values.tolist()
 
+
 def fetch_measurements():
+    """
+    Pobiera wszystkie pamiary z bazy danych.
+    :return: list
+    """
+
     with sqlite3.connect("air_monitor/database/air.db") as conn:
         all_measurements = pd.read_sql_query("SELECT detector_id, date, value  FROM measurements", conn)
         return all_measurements.values.tolist()
 
+
+# Ładowanie danych z bazy
 detectors = fetch_detectors()
 stations = fetch_stations()
 measurements = fetch_measurements()
 
+
 def map_detectors_to_stations(stations, detectors):
+    """
+    Tworzy słownik z stacjami i przypisanymi do nich detektorami.
+    :param stations: list
+    :param detectors: list
+    :return: dict
+    """
+
     station_detector_map = {}
     for station_name, station_id in stations:
         station_detector_map[station_name] = [
@@ -56,17 +78,32 @@ def map_detectors_to_stations(stations, detectors):
         ]
     return station_detector_map
 
+
 station_detector_map = map_detectors_to_stations(stations, detectors)
 
+
 def get_detector_id_by_indicator(station_name, indicator):
+    """
+    Zwraca ID detektora dla danego wskaźnika i stacji.
+    :param station_name: str
+    :param indicator: str
+    :return: int | None
+    """
+
     detectors = station_detector_map[station_name]
-    # print(detectors)
     for d in detectors:
         if d["indicator"] == indicator:
             return d["detector_id"]
     return None
 
+
 def get_measurements_for_detector(detector_id):
+    """
+    Wyszukuje najnowsze pomiary dla danego detektora.
+    :param detector_id: int
+    :return: list
+    """
+
     # Dane odpowiadające danemu detektorowi
     ms_data = [(date, value) for d_id, date, value in measurements if d_id == detector_id]
     # Zamiana daty ze stringa
@@ -81,49 +118,51 @@ def get_measurements_for_detector(detector_id):
     ]
     return new_result
 
+
+# Inicjalizacja danych globalnych
 # Lista stacji do dropdowna
 station_names = [name for name, _ in stations]
 # Domyślna stacja
 first_station = station_names[0] if station_names else None
 # Lista detektorów dla domyślnej stacji
 default_detectors = station_detector_map[first_station]
-
+# Wybrana stacja
 selected_station = first_station
+# Dostępne detektory
 available_detectors = [d["indicator"] for d in default_detectors]
+# Wybrany detektor
 selected_detector = available_detectors[0] if available_detectors else None
 
 
 def on_station_change(state):
-    # print(state)
+    """
+    Obsługuje zmianę wybranej stacji.
+    :param state: Obiekt stanu GUI.
+    :return: None
+    """
     station_name = state.selected_station
     state.available_detectors = [d["indicator"] for d in station_detector_map[station_name]]
     state.selected_detector = state.available_detectors[0] if state.available_detectors else None
-    # print("state.selected_station", state.selected_station)
-    # print("state.available_detectors", state.available_detectors)
-    # print("state.selected_detector", state.selected_detector)
-    #
-    # print("Zmieniono stację:", station_name)
-    # print("Detektory:", state.available_detectors)
 
-    # Zaktualizuj wykres po zmianie stacji
+    # Aktualizacja wykresu po zmianie stacji
     on_detector_change(state)
-    print("state:", state.dates)
+
 
 def on_detector_change(state):
+    """
+    Aktualizuje wykres na podstawie wybranego detektora.
+    :param state: Obiekt stanu GUI.
+    :return: None
+    """
     station_name = state.selected_station
     selected_indicator = state.selected_detector
-    # print(selected_indicator)
-
     # Pobierz odpowiedni detector_id
     detector_id = get_detector_id_by_indicator(station_name, selected_indicator)
-    # print(detector_id)
 
     # Pobierz dane pomiarowe dla tego detektora
     data = get_measurements_for_detector(detector_id)
-    # print(data)
 
-
-    # Jeśli brak danych, ustaw pusty wykres
+    # Jeśli brak danych, zwróć pusty wykres -> TODO zwróć info o braku danych lub załaduj starsza dane
     if not data:
         state.display_figure = go.Figure()
         return
@@ -133,8 +172,8 @@ def on_detector_change(state):
 
     figure = go.Figure()
     figure.add_trace(go.Scatter(
-        x = x,
-        y = y,
+        x=x,
+        y=y,
         name=str(detector_id),
         # showlegend=False,
 
@@ -147,13 +186,12 @@ def on_detector_change(state):
     state.display_figure = figure
 
 
-
-# create page
+# Tworzenie strony GUI
 with tgb.Page() as page:
     with tgb.part("text-center"):
         tgb.image("assets/logo.png", width="10vw")
         tgb.text("# S&P 500 Stock Value Over Time",
-             mode="md")
+                 mode="md")
         tgb.date_range(
             "{dates}",
             label_start="Start Date",
@@ -177,9 +215,9 @@ with tgb.Page() as page:
             tgb.image("assets/logo.png", width="3vw")
             tgb.text("Test")
 
-
 if __name__ == "__main__":
+    # Uruchomienie GUI
     gui = tp.Gui(page)
 
-    gui.run(title = "Air Monitor",
+    gui.run(title="Air Monitor",
             use_reloader=True, port="auto")
