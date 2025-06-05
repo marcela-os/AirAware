@@ -6,13 +6,21 @@ import datetime
 import sqlite3
 import pandas as pd
 import plotly.graph_objs as go
+import datetime
+from datetime import datetime
+
+
+x = datetime.now().date()
+print(x)
+
+
 
 dates = [
-    datetime.datetime(2024, 1, 1),
-    datetime.datetime(2025, 1, 1),
+    datetime(2024, 1, 1),
+    datetime(2025, 1, 1),
 ]
 
-
+display_figure = go.Figure()
 
 
 def fetch_stations():
@@ -27,7 +35,7 @@ def fetch_detectors():
 
 def fetch_measurements():
     with sqlite3.connect("air_monitor/database/air.db") as conn:
-        all_measurements = pd.read_sql_query("SELECT detector_id, date, value  FROM measurement", conn)
+        all_measurements = pd.read_sql_query("SELECT detector_id, date, value  FROM measurements", conn)
         return all_measurements.values.tolist()
 
 detectors = fetch_detectors()
@@ -52,14 +60,26 @@ station_detector_map = map_detectors_to_stations(stations, detectors)
 
 def get_detector_id_by_indicator(station_name, indicator):
     detectors = station_detector_map[station_name]
-    print(detectors)
+    # print(detectors)
     for d in detectors:
         if d["indicator"] == indicator:
-            print("get:", d["detector_id"])
             return d["detector_id"]
     return None
 
-
+def get_measurements_for_detector(detector_id):
+    # Dane odpowiadające danemu detektorowi
+    ms_data = [(date, value) for d_id, date, value in measurements if d_id == detector_id]
+    # Zamiana daty ze stringa
+    parsed_data = [(datetime.strptime(dt, "%Y-%m-%d %H:%M:%S"), val) for dt, val in ms_data]
+    # Dzisiejsza data
+    max_date = max(date.date() for date, _ in parsed_data)
+    # Dane z najnowszą datą
+    new_result = [
+        (date, val)
+        for date, val in parsed_data
+        if date.date() == max_date
+    ]
+    return new_result
 
 # Lista stacji do dropdowna
 station_names = [name for name, _ in stations]
@@ -78,26 +98,53 @@ def on_station_change(state):
     station_name = state.selected_station
     state.available_detectors = [d["indicator"] for d in station_detector_map[station_name]]
     state.selected_detector = state.available_detectors[0] if state.available_detectors else None
-    print("state.selected_station", state.selected_station)
-    print("state.available_detectors", state.available_detectors)
-    print("state.selected_detector", state.selected_detector)
-    #1. sprawdz ktory detektor zostal klikniety i wybrany jesli zostala kliknieta stacja
+    # print("state.selected_station", state.selected_station)
+    # print("state.available_detectors", state.available_detectors)
+    # print("state.selected_detector", state.selected_detector)
     #
-    #2. klikniety detektor przekaz do fukcji get_detector_id_by_indicator(wybrany detektor)
-
-    print("Zmieniono stację:", station_name)
-    print("Detektory:", state.available_detectors)
+    # print("Zmieniono stację:", station_name)
+    # print("Detektory:", state.available_detectors)
 
     # Zaktualizuj wykres po zmianie stacji
     on_detector_change(state)
+    print("state:", state.dates)
 
 def on_detector_change(state):
     station_name = state.selected_station
     selected_indicator = state.selected_detector
-    print("Station:", station_name, "| Selected Indicator:", selected_indicator)
+    # print(selected_indicator)
 
+    # Pobierz odpowiedni detector_id
     detector_id = get_detector_id_by_indicator(station_name, selected_indicator)
-    print(detector_id)
+    # print(detector_id)
+
+    # Pobierz dane pomiarowe dla tego detektora
+    data = get_measurements_for_detector(detector_id)
+    # print(data)
+
+
+    # Jeśli brak danych, ustaw pusty wykres
+    if not data:
+        state.display_figure = go.Figure()
+        return
+
+    x = [d[0] for d in data]
+    y = [d[1] for d in data]
+
+    figure = go.Figure()
+    figure.add_trace(go.Scatter(
+        x = x,
+        y = y,
+        name=str(detector_id),
+        # showlegend=False,
+
+    ))
+    figure.update_layout(title=f"Wykres dla detektora: {selected_indicator} ({detector_id})")
+    # figure.update_layout(legend_title_text="Contestant")
+    figure.update_xaxes(title_text="Data pomiaru")
+    figure.update_yaxes(title_text="Wartość")
+
+    state.display_figure = figure
 
 
 
@@ -125,7 +172,7 @@ with tgb.Page() as page:
                          lov="{available_detectors}",
                          on_change="on_detector_change",
                          dropdown=True)
-        tgb.chart()
+        tgb.chart(figure="{display_figure}")
         with tgb.layout("5 5 5 5 5"):
             tgb.image("assets/logo.png", width="3vw")
             tgb.text("Test")
@@ -135,4 +182,4 @@ if __name__ == "__main__":
     gui = tp.Gui(page)
 
     gui.run(title = "Air Monitor",
-            use_reloader=True)
+            use_reloader=True, port="auto")

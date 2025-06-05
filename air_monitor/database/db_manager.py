@@ -36,7 +36,7 @@ def create_db(c):
         )
     """)
     c.execute("""
-        CREATE TABLE IF NOT EXISTS measurement (
+        CREATE TABLE IF NOT EXISTS measurements (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             position_code TEXT,
             date TEXT,
@@ -196,7 +196,7 @@ def save_detectors_and_measurements(cursor, detectors, measurements):
             continue
         for value in measurement.values:
             cursor.execute("""
-                INSERT OR IGNORE INTO measurement (position_code, date, value, detector_id)
+                INSERT OR IGNORE INTO measurements (position_code, date, value, detector_id)
                 VALUES (?, ?, ?, ?)
             """, (
                 value.code,
@@ -207,10 +207,10 @@ def save_detectors_and_measurements(cursor, detectors, measurements):
 
 
 # if __name__ == '__main__':
-    # create_stations()
-    # with sqlite3.connect("air.db") as connection:
-    #     c = connection.cursor()
-    #     tables = ['stations', 'aq_index']
-    #
-    #     for table in tables:
-    #         c.execute(f'DROP TABLE IF EXISTS "{table}"')
+#     # create_stations()
+#     with sqlite3.connect("air.db") as connection:
+#         c = connection.cursor()
+#         tables = ['measurement']
+#
+#         for table in tables:
+#             c.execute(f'DROP TABLE IF EXISTS "{table}"')
