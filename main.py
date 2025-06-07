@@ -6,6 +6,7 @@ import sqlite3
 import pandas as pd
 import plotly.graph_objs as go
 from datetime import datetime
+from types import SimpleNamespace
 
 # Aktualna data
 x = datetime.now().date()
@@ -134,6 +135,14 @@ available_detectors = [d["indicator"] for d in default_detectors]
 selected_detector = available_detectors[0] if available_detectors else None
 
 
+# Tymczasowy obiekt stanu z domyślnymi wartościami
+initial_state = SimpleNamespace(
+    selected_station=selected_station,
+    selected_detector=selected_detector,
+    display_figure=display_figure
+)
+
+
 def on_station_change(state):
     """
     Obsługuje zmianę wybranej stacji.
@@ -184,6 +193,11 @@ def on_detector_change(state):
     figure.update_yaxes(title_text="Wartość")
 
     state.display_figure = figure
+
+# Generowanie pierwszego wykresu
+on_detector_change(initial_state)
+
+display_figure = initial_state.display_figure
 
 
 # Tworzenie strony GUI
