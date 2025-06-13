@@ -1,6 +1,6 @@
 import taipy as tp
 import taipy.gui.builder as tgb
-from taipy.gui import Gui, Icon
+from taipy.gui import Gui, Icon, navigate
 from taipy import Config
 import sqlite3
 import pandas as pd
@@ -200,6 +200,10 @@ def on_detector_change(state):
 
     state.display_figure = figure
 
+def menu_option_selected(state, id, payload):
+    page_name = payload["args"][0]
+    navigate(state, to=page_name)
+
 
 # Generowanie pierwszego wykresu
 on_detector_change(initial_state)
@@ -207,18 +211,32 @@ on_detector_change(initial_state)
 display_figure = initial_state.display_figure
 
 # Tworzenie strony GUI
+# Strona Home
+with tgb.Page(route="/") as home:
+    with tgb.part(class_name="container text-center"):
+        tgb.image("assets/logo.png", width="10vw")
+        tgb.text("# Air monitor",
+                 mode="md")
+        with tgb.layout("20 80"):
+            tgb.selector(label="Stacja",
+                         class_name="fullwidth",
+                         value="{selected_station}",
+                         lov="{station_names}",
+                         on_change="on_station_change",
+                         dropdown=True)
+            tgb.selector(label="detectors",
+                         class_name="fullwidth",
+                         value="{selected_detector}",
+                         lov="{available_detectors}",
+                         on_change="on_detector_change",
+                         dropdown=True)
 # Strona 1
-with tgb.Page(route="/") as page1:
+with tgb.Page(route="/page1") as page1:
     # with tgb.Page(name="Chart", label="Chart", route="/"):
     with tgb.part(class_name="container text-center"):
         tgb.image("assets/logo.png", width="10vw")
         tgb.text("# Air monitor",
                  mode="md")
-        tgb.date_range(
-            "{dates}",
-            label_start="Start Date",
-            label_end="End Date"
-        )
         with tgb.layout("20 80"):
             tgb.selector(label="Stacja",
                          class_name="fullwidth",
@@ -241,19 +259,20 @@ with tgb.Page(route="/page2") as page2:
     with tgb.part(class_name="container text-center"):
         tgb.image("assets/logo.png", width="10vw")
         tgb.text("# Map page", mode="md")
-        tgb.date_range("{dates}", label_start="Start Date", label_end="End Date")
 
 # Menu
 with tgb.Page() as root_page:
     tgb.menu(
         label="Menu",
         lov=[
-            ("page1", Icon("assets/map.png", "Chart")),
-            ("page2", Icon("assets/person.png", "Map")),
+            ("home", Icon("assets/house.png", "Home")),
+            ("page1", Icon("assets/chart.png", "Statystyki")),
+            ("page2", Icon("assets/map.png", "Mapa")),
         ],
+        on_action=menu_option_selected,
     )
 
-pages = {"/": root_page, "page1": page1, "page2": page2}
+pages = {"/": root_page, "home": home, "page1": page1, "page2": page2}
 
 
 if __name__ == "__main__":
