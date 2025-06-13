@@ -1,6 +1,6 @@
 import taipy as tp
 import taipy.gui.builder as tgb
-from taipy.gui import Icon
+from taipy.gui import Gui, Icon
 from taipy import Config
 import sqlite3
 import pandas as pd
@@ -104,11 +104,18 @@ def get_measurements_for_detector(detector_id):
     :param detector_id: int
     :return: list
     """
-
+    # TO DO   sprawdź czy są pomiary
     # Dane odpowiadające danemu detektorowi
     ms_data = [(date, value) for d_id, date, value in measurements if d_id == detector_id]
-    # Zamiana daty ze stringa
+
+    if not ms_data:
+        return []
+
+        # Zamiana daty ze stringa
     parsed_data = [(datetime.strptime(dt, "%Y-%m-%d %H:%M:%S"), val) for dt, val in ms_data]
+    if not parsed_data:
+        return []
+
     # Dzisiejsza data
     max_date = max(date.date() for date, _ in parsed_data)
     # Dane z najnowszą datą
@@ -133,7 +140,6 @@ selected_station = first_station
 available_detectors = [d["indicator"] for d in default_detectors]
 # Wybrany detektor
 selected_detector = available_detectors[0] if available_detectors else None
-
 
 # Tymczasowy obiekt stanu z domyślnymi wartościami
 initial_state = SimpleNamespace(
@@ -171,7 +177,7 @@ def on_detector_change(state):
     # Pobierz dane pomiarowe dla tego detektora
     data = get_measurements_for_detector(detector_id)
 
-    # Jeśli brak danych, zwróć pusty wykres -> TODO zwróć info o braku danych lub załaduj starsza dane
+    # Jeśli brak danych, zwróć pusty wykres -> TO DO zwróć info o braku danych lub załaduj starsza dane
     if not data:
         state.display_figure = go.Figure()
         return
@@ -194,17 +200,19 @@ def on_detector_change(state):
 
     state.display_figure = figure
 
+
 # Generowanie pierwszego wykresu
 on_detector_change(initial_state)
 
 display_figure = initial_state.display_figure
 
-
 # Tworzenie strony GUI
-with tgb.Page() as page:
-    with tgb.part("text-center"):
+# Strona 1
+with tgb.Page(route="/") as page1:
+    # with tgb.Page(name="Chart", label="Chart", route="/"):
+    with tgb.part(class_name="container text-center"):
         tgb.image("assets/logo.png", width="10vw")
-        tgb.text("# S&P 500 Stock Value Over Time",
+        tgb.text("# Air monitor",
                  mode="md")
         tgb.date_range(
             "{dates}",
@@ -228,10 +236,33 @@ with tgb.Page() as page:
         with tgb.layout("5 5 5 5 5"):
             tgb.image("assets/logo.png", width="3vw")
             tgb.text("Test")
+# Strona 2
+with tgb.Page(route="/page2") as page2:
+    with tgb.part(class_name="container text-center"):
+        tgb.image("assets/logo.png", width="10vw")
+        tgb.text("# Map page", mode="md")
+        tgb.date_range("{dates}", label_start="Start Date", label_end="End Date")
+
+# Menu
+with tgb.Page() as root_page:
+    tgb.menu(
+        label="Menu",
+        lov=[
+            ("page1", Icon("assets/map.png", "Chart")),
+            ("page2", Icon("assets/person.png", "Map")),
+        ],
+    )
+
+pages = {"/": root_page, "page1": page1, "page2": page2}
+
 
 if __name__ == "__main__":
     # Uruchomienie GUI
-    gui = tp.Gui(page)
+    # Gui(pages=pages).run(title="Sales", dark_mode=False, debug=True, port="auto")
+
+
+    gui = tp.Gui(pages=pages)
 
     gui.run(title="Air Monitor",
-            use_reloader=True, port="auto")
+            use_reloader=True, port="auto", dark_mode=False)
+
