@@ -7,6 +7,8 @@ import pandas as pd
 import plotly.graph_objs as go
 from datetime import datetime
 from types import SimpleNamespace
+from air_monitor.utils.nearest_stations import get_nearest_stations
+
 
 # Aktualna data
 x = datetime.now().date()
@@ -26,7 +28,7 @@ def fetch_stations():
     """
 
     with sqlite3.connect("air_monitor/database/air.db") as conn:
-        all_stations = pd.read_sql_query("SELECT name, station_id FROM stations", conn)
+        all_stations = pd.read_sql_query("SELECT name, station_id, lat, long FROM stations", conn)
     return all_stations.values.tolist()
 
 
@@ -67,7 +69,7 @@ def map_detectors_to_stations(stations, detectors):
     """
 
     station_detector_map = {}
-    for station_name, station_id in stations:
+    for station_name, station_id, lat, long in stations:
         station_detector_map[station_name] = [
             {
                 "detector_id": detector_id,
@@ -129,7 +131,8 @@ def get_measurements_for_detector(detector_id):
 
 # Inicjalizacja danych globalnych
 # Lista stacji do dropdowna
-station_names = [name for name, _ in stations]
+station_names = [row[0] for row in stations]
+print(station_names)
 # Domyślna stacja
 first_station = station_names[0] if station_names else None
 # Lista detektorów dla domyślnej stacji
@@ -210,6 +213,27 @@ on_detector_change(initial_state)
 
 display_figure = initial_state.display_figure
 
+
+#inicjalizacja danych
+search_query = ""
+filtered_locations = [name for name, _id in stations]
+selected_location = ""
+
+
+new = get_nearest_stations("Poznań, dworzec główny", 200, stations)
+print(new)
+
+def on_input_change(state):
+    """
+    Aktualizuje input
+    :param state: Obiekt stanu GUI.
+    :return: None
+    """
+    query = state.search_query.lower()
+    state.filtered_locations = [
+        name for name, _id in stations if query in name.lower()
+    ]
+
 # Tworzenie strony GUI
 # Strona Home
 with tgb.Page(route="/") as home:
@@ -217,19 +241,28 @@ with tgb.Page(route="/") as home:
         tgb.image("assets/logo.png", width="10vw")
         tgb.text("# Air monitor",
                  mode="md")
-        with tgb.layout("20 80"):
-            tgb.selector(label="Stacja",
-                         class_name="fullwidth",
-                         value="{selected_station}",
-                         lov="{station_names}",
-                         on_change="on_station_change",
-                         dropdown=True)
-            tgb.selector(label="detectors",
-                         class_name="fullwidth",
-                         value="{selected_detector}",
-                         lov="{available_detectors}",
-                         on_change="on_detector_change",
-                         dropdown=True)
+        tgb.html("br")
+        tgb.html("p", "Lokalizacje:")
+        # tgb.input(label="Szukaj lokalizacji", value="{search_query}", on_change=on_input_change)
+        # tgb.text("## Dopasowane lokalizacje:")
+        # tgb.selector("{search_query}",  lov="{station_names}", label="Wybierz z listy", dropdown=False)
+        tgb.input(label="Szukaj lokalizacji", value="{search_query}", on_change=on_input_change)
+        tgb.text("## Dopasowane lokalizacje:")
+        tgb.selector("{selected_location}", lov="{filtered_locations}", label="Wybierz z listy", dropdown=True)
+
+        # with tgb.layout("20 80"):
+        #     tgb.selector(label="Stacja",
+        #                  class_name="fullwidth",
+        #                  value="{selected_station}",
+        #                  lov="{station_names}",
+        #                  on_change="on_station_change",
+        #                  dropdown=True)
+        #     tgb.selector(label="detectors",
+        #                  class_name="fullwidth",
+        #                  value="{selected_detector}",
+        #                  lov="{available_detectors}",
+        #                  on_change="on_detector_change",
+        #                  dropdown=True)
 # Strona 1
 with tgb.Page(route="/page1") as page1:
     # with tgb.Page(name="Chart", label="Chart", route="/"):

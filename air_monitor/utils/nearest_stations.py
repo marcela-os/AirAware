@@ -307,7 +307,7 @@ ctx = ssl.create_default_context(cafile=certifi.where())
 geolocator = Nominatim(user_agent="air_quality_app_Marcelina", ssl_context=ctx)
 
 
-def get_stations(description, max_distance_km, stations_data):
+def get_nearest_stations(description, max_distance_km, stations_data):
     """
     Returns a list of measuring stations within a specified distance from the specified location.
 
@@ -331,5 +331,5 @@ def get_stations(description, max_distance_km, stations_data):
     return sorted(stations, key=lambda value: value[0])
 
 
-new = get_stations("Poznań, dworzec główny", 200, wszystkie_stacje_pomiarowe)
+new = get_nearest_stations("Poznań, dworzec główny", 200, wszystkie_stacje_pomiarowe)
 print(new)
