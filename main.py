@@ -1,6 +1,6 @@
 import taipy as tp
 import taipy.gui.builder as tgb
-from taipy.gui import Gui, Icon, navigate
+from taipy.gui import State, Icon, navigate
 from taipy import Config
 import sqlite3
 import pandas as pd
@@ -132,7 +132,8 @@ def get_measurements_for_detector(detector_id):
 # Inicjalizacja danych globalnych
 # Lista stacji do dropdowna
 station_names = [row[0] for row in stations]
-print(station_names)
+# print("stations", stations)
+# print("station_names", station_names)
 # Domyślna stacja
 first_station = station_names[0] if station_names else None
 # Lista detektorów dla domyślnej stacji
@@ -214,25 +215,29 @@ on_detector_change(initial_state)
 display_figure = initial_state.display_figure
 
 
-#inicjalizacja danych
+
+# inicjalizacja danych
 search_query = ""
-filtered_locations = [name for name, _id in stations]
-selected_location = ""
+filtered_locations = [name for name, *_ in stations]
+selected_station = ""
+station_data = ""
 
-
-new = get_nearest_stations("Poznań, dworzec główny", 200, stations)
-print(new)
-
+# Zmiana inputa
 def on_input_change(state):
-    """
-    Aktualizuje input
-    :param state: Obiekt stanu GUI.
-    :return: None
-    """
     query = state.search_query.lower()
     state.filtered_locations = [
-        name for name, _id in stations if query in name.lower()
+        name for name, *_ in stations if query in name.lower()
     ]
+
+# Zmiana selektora
+def on_station_select(state):
+    selected = state.selected_station
+    for name, id, lat, long in stations:
+        if name == selected:
+            state.station_data = f"ID: {id} | Szerokość: {lat} | Długość: {long}"
+            break
+    else:
+        state.station_data = "Nie znaleziono danych."
 
 # Tworzenie strony GUI
 # Strona Home
@@ -243,26 +248,13 @@ with tgb.Page(route="/") as home:
                  mode="md")
         tgb.html("br")
         tgb.html("p", "Lokalizacje:")
-        # tgb.input(label="Szukaj lokalizacji", value="{search_query}", on_change=on_input_change)
-        # tgb.text("## Dopasowane lokalizacje:")
-        # tgb.selector("{search_query}",  lov="{station_names}", label="Wybierz z listy", dropdown=False)
-        tgb.input(label="Szukaj lokalizacji", value="{search_query}", on_change=on_input_change)
-        tgb.text("## Dopasowane lokalizacje:")
-        tgb.selector("{selected_location}", lov="{filtered_locations}", label="Wybierz z listy", dropdown=True)
+        with tgb.layout("20 80"):
+            with tgb.part(class_name="container text-center"):
+                tgb.input("Szukaj stacji", value="{search_query}", on_change=on_input_change)
+                tgb.selector("{selected_station}", lov="{filtered_locations}", label="Wybierz z listy", dropdown=False,
+                             on_change=on_station_select)
+            tgb.text("{station_data}")
 
-        # with tgb.layout("20 80"):
-        #     tgb.selector(label="Stacja",
-        #                  class_name="fullwidth",
-        #                  value="{selected_station}",
-        #                  lov="{station_names}",
-        #                  on_change="on_station_change",
-        #                  dropdown=True)
-        #     tgb.selector(label="detectors",
-        #                  class_name="fullwidth",
-        #                  value="{selected_detector}",
-        #                  lov="{available_detectors}",
-        #                  on_change="on_detector_change",
-        #                  dropdown=True)
 # Strona 1
 with tgb.Page(route="/page1") as page1:
     # with tgb.Page(name="Chart", label="Chart", route="/"):
