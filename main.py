@@ -8,6 +8,8 @@ import plotly.graph_objs as go
 from datetime import datetime
 from types import SimpleNamespace
 from air_monitor.utils.nearest_stations import get_nearest_stations
+from chart import generate_map
+
 
 
 # # Aktualna data
@@ -142,6 +144,8 @@ selected_station = first_station
 available_detectors = [d["indicator"] for d in default_detectors]
 # Wybrany detektor
 selected_detector = available_detectors[0] if available_detectors else None
+# Inicjalizacja mapy
+map_fig = generate_map(stations)
 
 # Tymczasowy obiekt stanu z domyślnymi wartościami
 initial_state = SimpleNamespace(
@@ -287,8 +291,9 @@ with tgb.Page(route="/") as home:
         tgb.html("br")
         with tgb.layout("50 50"):
             with tgb.part(class_name="container text-center"):
-                tgb.input("Wpisz lokalizację (np. 'Dworzec Poznań')", value="{search_query}", on_change=on_input_change, width=500)
-                tgb.selector(value="{selected_station}", lov="{filtered_locations}", label="Wybierz stację", dropdown=False,
+                tgb.input(label="Wpisz lokalizację (np. 'Dworzec Poznań')", value="{search_query}", on_change=on_input_change, width=500)
+                tgb.html("br")
+                tgb.selector(value="{selected_station}", lov="{filtered_locations}", dropdown=False,
                              on_change=on_station_select, width="500px")
             with tgb.part(class_name="container text-center"):
                 tgb.text("{station_data}")
@@ -326,6 +331,7 @@ with tgb.Page(route="/page2") as page2:
     with tgb.part(class_name="container text-center"):
         tgb.image("assets/logo.png", width="10vw")
         tgb.text("# Map page", mode="md")
+        tgb.chart(figure="{map_fig}")
 
 # Menu
 with tgb.Page() as root_page:
