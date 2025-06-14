@@ -1,4 +1,29 @@
+/* Icons */
+
 .MuiAvatar-img {
     width: 50%;
     height: 50%;
+}
+
+/* Input */
+
+.MuiFormControl-root {
+    width: 100%;
+}
+
+/* Selector */
+
+.MuiFormControl-root{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.MuiPaper-root {
+    width: 500px;
+}
+
+.MuiList-root {
+    height: 60vh;
+    overflow-y: auto;
 }
