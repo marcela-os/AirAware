@@ -17,8 +17,11 @@ def get_nearest_stations(description, max_distance_km, stations_data):
     :param stations_data: List of dict with stations, each containing ‘gegrLat’, ‘gegrLon’ and ‘stationName’
     :return: List of tuples (distance_km, station_name) sorted in ascending order of distance
     """
+    try:
+        location = geolocator.geocode(description, timeout=10)
+    except Exception as e:
+        raise RuntimeError(f"Geolocation failed: {e}")
 
-    location = geolocator.geocode(description, timeout=10)
 
     if not location:
         raise ValueError(f"No location found for the description: {description}")
@@ -26,7 +29,6 @@ def get_nearest_stations(description, max_distance_km, stations_data):
 
     data = [(float(item[2]), float(item[3]), item[0]) for item in stations_data]
 
-    # data = [(float(item['gegrLat']), float(item['gegrLon']), item['stationName']) for item in stations_data]
     stations = [(round(distance.geodesic((location.latitude, location.longitude), (item[0], item[1])).km, 2), item[2])
                 for item in data]
 
@@ -34,6 +36,6 @@ def get_nearest_stations(description, max_distance_km, stations_data):
 
     return sorted(stations, key=lambda value: value[0])
 
-#
-# new = get_nearest_stations("Poznań, dworzec główny", 200, wszystkie_stacje_pomiarowe)
+
+# new = get_nearest_stations("Kłodzko, ul. Szkolna", 200, wszystkie_stacje_pomiarowe)
 # print(new)

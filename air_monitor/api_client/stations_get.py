@@ -9,7 +9,7 @@ def get_stations_data(session, base_url):
     :param base_url: url GIOŚ
     :return: dict
     """
-    endpoint = f'{base_url}/pjp-api/v1/rest/station/findAll'
+    endpoint = f'{base_url}/pjp-api/v1/rest/station/findAll?size=500'
     try:
         response = session.get(endpoint, timeout=5)
         response.raise_for_status()

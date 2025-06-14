@@ -10,13 +10,13 @@ from types import SimpleNamespace
 from air_monitor.utils.nearest_stations import get_nearest_stations
 
 
-# Aktualna data
-x = datetime.now().date()
-
-dates = [
-    datetime(2024, 1, 1),
-    datetime(2025, 1, 1),
-]
+# # Aktualna data
+# x = datetime.now().date()
+#
+# dates = [
+#     datetime(2024, 1, 1),
+#     datetime(2025, 1, 1),
+# ]
 # Początkowy pusty wykres
 display_figure = go.Figure()
 
@@ -131,7 +131,7 @@ def get_measurements_for_detector(detector_id):
 
 # Inicjalizacja danych globalnych
 # Lista stacji do dropdowna
-station_names = [row[0] for row in stations]
+station_names = [name for name, *_ in stations]
 # print("stations", stations)
 # print("station_names", station_names)
 # Domyślna stacja
@@ -215,29 +215,99 @@ on_detector_change(initial_state)
 display_figure = initial_state.display_figure
 
 
-
-# inicjalizacja danych
+# Inicjalizacja danych
 search_query = ""
-filtered_locations = [name for name, *_ in stations]
+filtered_locations = station_names
 selected_station = ""
 station_data = ""
+nearest_station_list = ""
 
 # Zmiana inputa
 def on_input_change(state):
-    query = state.search_query.lower()
-    state.filtered_locations = [
-        name for name, *_ in stations if query in name.lower()
-    ]
+    if not state.search_query.strip():
+        state.filtered_locations = []
+        state.nearest_station_list = ""
+        return
+
+    nearest = get_nearest_stations(state.search_query, 100, stations)
+
+    # Lista podpowiedzi do selektora
+    state.filtered_locations = [entry[1] for entry in nearest]
+
+    # Pokazuj najbliższych stacji
+    state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
 
 # Zmiana selektora
 def on_station_select(state):
-    selected = state.selected_station
-    for name, id, lat, long in stations:
-        if name == selected:
-            state.station_data = f"ID: {id} | Szerokość: {lat} | Długość: {long}"
-            break
-    else:
-        state.station_data = "Nie znaleziono danych."
+    selected_name = state.selected_station
+    query = state.search_query.strip()
+    if not state.search_query.strip():
+        query = selected_name.strip().split()[0]
+        print("QUERY", query)
+    print(state.search_query.strip())
+    # match = next(((dist, name) for dist, name in get_nearest_stations(state.search_query, 100, stations)
+    #               if name == selected_name), None)
+    #
+    # if match:
+    #     dist, name = match
+    #     state.station_data = f"Wybrana stacja: {name}\n Odległość: {dist:.2f} km"
+    # else:
+    #     state.station_data = "Nie znaleziono szczegółów dla tej stacji."
+
+    # print("Selected:", state.selected_station)
+    # print("search_query:", repr(state.search_query))
+    # print("selected_station:", repr(state.selected_station))
+    # selected_name = state.selected_station
+    # query = state.search_query
+
+    # if query and not selected_name:
+    #     # Użytkownik wpisuje lokalizację, wybierasz najbliższe stacje
+    #     nearest = get_nearest_stations(query, 100, stations)
+    #     if nearest:
+    #         dist, name = nearest[0]  # np. najbliższa stacja
+    #         state.station_data = f"Najbliższa stacja do '{query}': {name}\nOdległość: {dist:.2f} km"
+    #     else:
+    #         state.station_data = "Nie znaleziono stacji dla podanej lokalizacji."
+    # else:
+    # Użytkownik wybrał stację z listy, więc pokazujemy szczegóły
+    # for name, id, lat, long in stations:
+    #     if name == selected_name:
+    #         # state.station_data = f"Wybrana stacja: {name} | Szerokość: {lat} | Długość: {long}"
+    #         nearest = get_nearest_stations(name, 100, stations)
+    #         match = next(((dist, name) for dist, name in nearest if name == selected_name), None)
+    #         if match:
+    #             dist, name = match
+    #             for s_name, s_id, lat, long in stations:
+    #                 if s_name == name:
+    #                     state.station_data = f"Wybrana stacja: {name}\nOdległość od '{name}': {dist:.2f} km\nWspółrzędne: {lat}, {long}"
+    #                     return
+    #         break
+    # else:
+    #     state.station_data = "Nie znaleziono danych."
+    if query:
+        nearest = get_nearest_stations(query, 100, stations)
+        match = next(((dist, name) for dist, name in nearest if name == selected_name), None)
+        if match:
+            dist, name = match
+            for s_name, s_id, lat, long in stations:
+                if s_name == name:
+                    state.station_data = f"Wybrana stacja: {name}\nOdległość od '{query}': {dist:.2f} km\nWspółrzędne: {lat}, {long}"
+                    state.filtered_locations = [entry[1] for entry in nearest]
+
+                    # Pokazuj najbliższych stacji
+                    state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
+                    return
+        # Fallback: bez query albo nie znaleziono dystansu
+    for s_name, s_id, lat, long in stations:
+        if s_name == selected_name:
+            state.station_data = f"Wybrana stacja: {s_name}\nWspółrzędne: {lat}, {long}\n(Brak danych o odległości – wpisz lokalizację)"
+            return
+
+    state.station_data = "Nie znaleziono danych."
+
+    # print("Wybrano stację:", selected_name)
+    # print("Stan danych:", state.station_data)
+
 
 # Tworzenie strony GUI
 # Strona Home
@@ -248,12 +318,15 @@ with tgb.Page(route="/") as home:
                  mode="md")
         tgb.html("br")
         tgb.html("p", "Lokalizacje:")
-        with tgb.layout("20 80"):
+        with tgb.layout("50 50"):
             with tgb.part(class_name="container text-center"):
-                tgb.input("Szukaj stacji", value="{search_query}", on_change=on_input_change)
-                tgb.selector("{selected_station}", lov="{filtered_locations}", label="Wybierz z listy", dropdown=False,
+                tgb.input("Wpisz lokalizację (np. 'Dworzec Poznań')", value="{search_query}", on_change=on_input_change)
+                tgb.selector(value="{selected_station}", lov="{filtered_locations}", label="Wybierz stację", dropdown=False,
                              on_change=on_station_select)
-            tgb.text("{station_data}")
+            with tgb.part(class_name="container text-center"):
+                tgb.text("{station_data}")
+                tgb.text("Stacje w promieniu 100 km:")
+                tgb.text("{nearest_station_list}")
 
 # Strona 1
 with tgb.Page(route="/page1") as page1:
