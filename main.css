@@ -23,7 +23,7 @@
     width: 500px;
 }
 
-.MuiList-root {
+.MuiList-root:not(.MuiMenu-list) {
     height: 60vh;
     overflow-y: auto;
 }
