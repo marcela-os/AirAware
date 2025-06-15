@@ -210,7 +210,8 @@ def save_detectors_and_measurements(cursor, detectors, measurements):
 #     # create_stations()
 #     with sqlite3.connect("air.db") as connection:
 #         c = connection.cursor()
-#         tables = ['measurement']
-#
+#         tables = ['measurements', 'aq_index', 'aq_indexParam', 'detectors', 'stations']
+#         print(tables)
 #         for table in tables:
 #             c.execute(f'DROP TABLE IF EXISTS "{table}"')
+#             print("Usuniete")

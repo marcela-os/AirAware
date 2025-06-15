@@ -5,7 +5,7 @@ from air_monitor.api_client.measurement_get import get_measurement_data
 from air_monitor.api_client.aq_index_get import get_aq_index_data
 
 __base_url = 'https://api.gios.gov.pl'
-
+EXCLUDED_STATIONS = {355} #wyrzuca server error podczas pobierania
 
 def fetch_all_data():
     """
@@ -21,7 +21,11 @@ def fetch_all_data():
 
         for station in stations:
             station_id = station['station_id']
-            sensors = get_sensors_data(s, station_id, __base_url)
+            if station_id not in EXCLUDED_STATIONS:
+                sensors = get_sensors_data(s, station_id, __base_url)
+            else:
+                print(f"Station {station_id} is excluded from data fetching.")
+            # sensors = get_sensors_data(s, station_id, __base_url)
 
             aq_index = get_aq_index_data(s, station_id, __base_url)
 

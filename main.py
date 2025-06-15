@@ -55,12 +55,55 @@ def fetch_measurements():
         all_measurements = pd.read_sql_query("SELECT detector_id, date, value  FROM measurements", conn)
         return all_measurements.values.tolist()
 
+# def fetch_aq_index():
+#     """
+#     Pobiera wszystkie pamiary aq_index z bazy danych.
+#     :return: list
+#     """
+#
+#     with sqlite3.connect("air_monitor/database/air.db") as conn:
+#         all_aq_index = pd.read_sql_query("SELECT station_id, indexLevelName FROM aq_index", conn)
+#         return all_aq_index.values.tolist()
+def fetch_latest_or_today_aq_index():
+    """
+    Pobiera pomiar indexLevelName dla każdej stacji:
+    - z dzisiejszej daty i najpóźniejszej godziny, jeśli jest,
+    - lub jeśli nie ma, to z najnowszej dostępnej daty i godziny.
+    """
+    query = """
+    WITH today_data AS (
+        SELECT station_id, MAX(stCalcDate) as max_date
+        FROM aq_index
+        WHERE DATE(stCalcDate) = DATE('now')
+        GROUP BY station_id
+    ),
+    latest_data AS (
+        SELECT station_id, MAX(stCalcDate) as max_date
+        FROM aq_index
+        GROUP BY station_id
+    ),
+    preferred_dates AS (
+        SELECT
+            latest_data.station_id,
+            COALESCE(today_data.max_date, latest_data.max_date) as chosen_date
+        FROM latest_data
+        LEFT JOIN today_data ON latest_data.station_id = today_data.station_id
+    )
+    SELECT a.station_id, a.index_id, a.indexLevelName
+    FROM aq_index a
+    JOIN preferred_dates p ON a.station_id = p.station_id AND a.stCalcDate = p.chosen_date
+    """
+
+    with sqlite3.connect("air_monitor/database/air.db") as conn:
+        df = pd.read_sql_query(query, conn)
+        return df.values.tolist()
 
 # Ładowanie danych z bazy
 detectors = fetch_detectors()
 stations = fetch_stations()
 measurements = fetch_measurements()
-
+# aq_index = fetch_aq_index()
+aq_index = fetch_latest_or_today_aq_index()
 
 def map_detectors_to_stations(stations, detectors):
     """
@@ -145,13 +188,13 @@ available_detectors = [d["indicator"] for d in default_detectors]
 # Wybrany detektor
 selected_detector = available_detectors[0] if available_detectors else None
 # Inicjalizacja mapy
-map_fig = generate_map(stations)
+map_fig = generate_map(stations, aq_index)
 
 # Tymczasowy obiekt stanu z domyślnymi wartościami
 initial_state = SimpleNamespace(
     selected_station=selected_station,
     selected_detector=selected_detector,
-    display_figure=display_figure
+    display_figure=display_figure,
 )
 
 
@@ -307,7 +350,7 @@ with tgb.Page(route="/page1") as page1:
     # with tgb.Page(name="Chart", label="Chart", route="/"):
     with tgb.part(class_name="container text-center"):
         tgb.image("assets/logo.png", width="10vw")
-        tgb.text("# Air monitor",
+        tgb.text("# Statystyki",
                  mode="md")
         with tgb.layout("20 80"):
             tgb.selector(label="Stacja",
@@ -330,7 +373,7 @@ with tgb.Page(route="/page1") as page1:
 with tgb.Page(route="/page2") as page2:
     with tgb.part(class_name="container text-center"):
         tgb.image("assets/logo.png", width="10vw")
-        tgb.text("# Map page", mode="md")
+        tgb.text("# Indeks jakości powietrza", mode="md")
         tgb.chart(figure="{map_fig}")
 
 # Menu
