@@ -45,7 +45,7 @@ def generate_map(data, aq_index):
         lons.append(lon)
         colors.append(color)
         sizes.append(size)
-        texts.append(f"<b>{station_name}</b><br>ID: {station_id}<br>Poziom: {label_text}")
+        texts.append(f"<b>{station_name}</b><br>ID: {station_id}<br>Index: {label_text}")
 
     fig = go.Figure()
 
