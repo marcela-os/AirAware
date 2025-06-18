@@ -1,12 +1,22 @@
 import taipy as tp
 import plotly.graph_objs as go
 from datetime import datetime
+from taipy.gui import navigate
+from gui import callbacks
 from types import SimpleNamespace
 from chart import generate_map
 from air_monitor.utils.datastore import DataStore
 from air_monitor.utils.logic import map_detectors_to_stations
-from gui.callbacks import on_detector_change
 from gui.pages import create_gui
+
+
+# Przypisanie callbacków do global scope wymagane przez Taipy GUI
+globals()["on_station_change"] = callbacks.on_station_change
+globals()["on_input_change"] = callbacks.on_input_change
+globals()["on_station_select"] = callbacks.on_station_select
+globals()["on_detector_change"] = callbacks.on_detector_change
+globals()["reload_data"] = callbacks.reload_data
+globals()["menu_option_selected"] = callbacks.menu_option_selected
 
 data = DataStore()
 stations = data.stations
@@ -36,6 +46,13 @@ selected_detector = available_detectors[0] if available_detectors else None
 # Inicjalizacja mapy
 map_fig = generate_map(stations, aq_index)
 
+# Inicjalizacja danych
+search_query = ""
+filtered_locations = station_names
+station_data = ""
+nearest_station_list = ""
+notification = ""
+
 # Tymczasowy obiekt stanu z domyślnymi wartościami
 initial_state = SimpleNamespace(
     selected_station=selected_station,
@@ -43,20 +60,23 @@ initial_state = SimpleNamespace(
     display_figure=display_figure,
     station_detector_map=station_detector_map,
     measurements=measurements,
+    first_station=first_station,
+    default_detectors=default_detectors,
+    available_detectors=available_detectors,
+    map_fig=map_fig,
+    search_query=search_query,
+    filtered_locations=station_names,
+    station_data=station_data,
+    nearest_station_list=nearest_station_list,
+    notification=notification,
 )
 
 # Generowanie pierwszego wykresu
-on_detector_change(initial_state)
+callbacks.on_detector_change(initial_state)
 
 display_figure = initial_state.display_figure
 
-# Inicjalizacja danych
-search_query = ""
-filtered_locations = station_names
-selected_station = ""
-station_data = ""
-nearest_station_list = ""
-notification = ""
+
 
 if __name__ == "__main__":
     # Uruchomienie GUI

@@ -7,6 +7,7 @@ from air_monitor.utils.nearest_stations import get_nearest_stations
 from air_monitor.utils.logic import get_detector_id_by_indicator, get_measurements_for_detector
 from taipy.gui import navigate
 
+
 # Zmiana inputa
 def on_input_change(state):
     """
@@ -15,7 +16,6 @@ def on_input_change(state):
     :return: None
     """
 
-    print(state)
 
     if not state.search_query.strip():
         state.filtered_locations = []
@@ -65,7 +65,6 @@ def on_station_select(state):
 
     state.station_data = "Nie znaleziono danych."
 
-
 def on_station_change(state):
     """
     Obsługuje zmianę wybranej stacji.
@@ -81,13 +80,13 @@ def on_station_change(state):
     # Aktualizacja wykresu po zmianie stacji
     on_detector_change(state)
 
-
 def on_detector_change(state):
     """
     Aktualizuje wykres na podstawie wybranego detektora.
     :param state: Obiekt stanu GUI.
     :return: None
     """
+
     station_name = state.selected_station
     selected_indicator = state.selected_detector
     station_detector_map = state.station_detector_map

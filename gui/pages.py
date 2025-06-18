@@ -44,13 +44,13 @@ def create_gui():
                              class_name="fullwidth",
                              value="{selected_station}",
                              lov="{station_names}",
-                             on_change="on_station_change",
+                             on_change=on_station_change,
                              dropdown=True)
                 tgb.selector(label="detectors",
                              class_name="fullwidth",
                              value="{selected_detector}",
                              lov="{available_detectors}",
-                             on_change="on_detector_change",
+                             on_change=on_detector_change,
                              dropdown=True)
             tgb.chart(figure="{display_figure}")
             with tgb.layout("5 5 5 5 5"):
