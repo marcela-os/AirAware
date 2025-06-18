@@ -70,9 +70,3 @@ def fetch_latest_or_today_aq_index():
         df = pd.read_sql_query(query, conn)
         return df.values.tolist()
 
-
-# Ładowanie danych z bazy
-detectors = fetch_detectors()
-stations = fetch_stations()
-measurements = fetch_measurements()
-aq_index = fetch_latest_or_today_aq_index()

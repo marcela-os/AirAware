@@ -1,3 +1,5 @@
+""" Pobieranie danych z bazy """
+
 from air_monitor.utils.database import fetch_stations, fetch_measurements, fetch_detectors, fetch_latest_or_today_aq_index
 
 # Implementacja singletona
