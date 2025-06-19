@@ -108,7 +108,7 @@ def on_detector_change(state):
         )
         return
     df = pd.DataFrame(data, columns=["time", "value"])
-    print(df)
+    # print(df)
 
     max_row = df.loc[df['value'].idxmax()]
     min_row = df.loc[df['value'].idxmin()]
@@ -142,6 +142,13 @@ def on_detector_change(state):
         mode="markers",
         marker=dict(color="#d00000", size=14, symbol="triangle-up"),
         name="Max"
+    ))
+    figure.add_trace(go.Scatter(
+        x=[df["time"].min(), df["time"].max()],
+        y=[srednia, srednia],
+        mode="lines",
+        line=dict(color="orange", dash="dash"),
+        name="Średnia"
     ))
     figure.update_layout(title=f"Wykres dla detektora: {selected_indicator} ({detector_id})")
     figure.update_xaxes(title_text="Data pomiaru")
