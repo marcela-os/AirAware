@@ -2,6 +2,7 @@
 
 import plotly.graph_objs as go
 import pandas as pd
+import numpy as np
 
 from air_monitor.utils.datastore import DataStore
 from air_monitor.utils.nearest_stations import get_nearest_stations
@@ -108,20 +109,20 @@ def on_detector_change(state):
         )
         return
     df = pd.DataFrame(data, columns=["time", "value"])
-    # print(df)
 
     max_row = df.loc[df['value'].idxmax()]
     min_row = df.loc[df['value'].idxmin()]
     srednia = df["value"].mean()
-    print(srednia)
-    print(f"Max: {max_row['value']} o {max_row['time']}")
-    print(f"Min: {min_row['value']} o {min_row['time']}")
 
-    x = [d[0] for d in data]
-    y = [d[1] for d in data]
+    # Trend z numpy.polyfit
+    x = df["time"].astype("int64") // 10 ** 9  # timestamp w sekundach
+    y = df["value"].values
 
+    slope, intercept = np.polyfit(x, y, deg=1)
+    trend_line = slope * x + intercept
 
     figure = go.Figure()
+    # Wszystkie wartości
     figure.add_trace(go.Scatter(
         x=df["time"],
         y=df["value"],
@@ -129,6 +130,7 @@ def on_detector_change(state):
         # showlegend=False,
 
     ))
+    # Min
     figure.add_trace(go.Scatter(
         x=[min_row["time"]],
         y=[min_row["value"]],
@@ -136,6 +138,7 @@ def on_detector_change(state):
         marker=dict(color="#00a05d", size=14, symbol="triangle-down"),
         name="Min"
     ))
+    # Max
     figure.add_trace(go.Scatter(
         x=[max_row["time"]],
         y=[max_row["value"]],
@@ -143,12 +146,22 @@ def on_detector_change(state):
         marker=dict(color="#d00000", size=14, symbol="triangle-up"),
         name="Max"
     ))
+    # Średnia
     figure.add_trace(go.Scatter(
         x=[df["time"].min(), df["time"].max()],
         y=[srednia, srednia],
         mode="lines",
         line=dict(color="orange", dash="dash"),
         name="Średnia"
+    ))
+    # Linia trendu
+    figure.add_trace(go.Scatter(
+        x=df["time"],
+        y=trend_line,
+        mode="lines",
+        opacity=0.75,
+        line=dict(color="brown", dash="dot"),
+        name="Trend"
     ))
     figure.update_layout(title=f"Wykres dla detektora: {selected_indicator} ({detector_id})")
     figure.update_xaxes(title_text="Data pomiaru")
