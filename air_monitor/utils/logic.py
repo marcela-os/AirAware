@@ -29,6 +29,7 @@ def get_detector_id_by_indicator(station_name, indicator, station_detector_map):
     Zwraca ID detektora dla danego wskaźnika i stacji.
     :param station_name: str
     :param indicator: str
+    :param station_detector_map: dict
     :return: int | None
     """
 
@@ -42,16 +43,17 @@ def get_measurements_for_detector(detector_id, measurements):
     """
     Wyszukuje najnowsze pomiary dla danego detektora.
     :param detector_id: int
+    :param measurements: list
     :return: list
     """
-    # TO DO   sprawdź czy są pomiary
+    # TO DO sprawdź czy są pomiary bo mzoe wcale nie pokazywać detektorów?
     # Dane odpowiadające danemu detektorowi
     ms_data = [(date, value) for d_id, date, value in measurements if d_id == detector_id]
 
     if not ms_data:
         return []
 
-        # Zamiana daty ze stringa
+    # Zamiana daty ze stringa
     parsed_data = [(datetime.strptime(dt, "%Y-%m-%d %H:%M:%S"), val) for dt, val in ms_data]
     if not parsed_data:
         return []

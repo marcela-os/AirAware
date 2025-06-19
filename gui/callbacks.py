@@ -1,6 +1,7 @@
 """ Funkcje reagujące na zmiany stanu GUI """
 
 import plotly.graph_objs as go
+import pandas as pd
 
 from air_monitor.utils.datastore import DataStore
 from air_monitor.utils.nearest_stations import get_nearest_stations
@@ -98,26 +99,56 @@ def on_detector_change(state):
 
     # Jeśli brak danych, zwróć pusty wykres -> TO DO zwróć info o braku danych lub załaduj starsza dane
     if not data:
-        state.display_figure = go.Figure()
+        state.display_figure = go.Figure().add_annotation(
+            text="Brak danych w danym dniu",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5,
+            showarrow=False,
+            font=dict(size=16)
+        )
         return
+    df = pd.DataFrame(data, columns=["time", "value"])
+    print(df)
+
+    max_row = df.loc[df['value'].idxmax()]
+    min_row = df.loc[df['value'].idxmin()]
+    srednia = df["value"].mean()
+    print(srednia)
+    print(f"Max: {max_row['value']} o {max_row['time']}")
+    print(f"Min: {min_row['value']} o {min_row['time']}")
 
     x = [d[0] for d in data]
     y = [d[1] for d in data]
 
+
     figure = go.Figure()
     figure.add_trace(go.Scatter(
-        x=x,
-        y=y,
+        x=df["time"],
+        y=df["value"],
         name=str(detector_id),
         # showlegend=False,
 
     ))
+    figure.add_trace(go.Scatter(
+        x=[min_row["time"]],
+        y=[min_row["value"]],
+        mode="markers",
+        marker=dict(color="#00a05d", size=14, symbol="triangle-down"),
+        name="Min"
+    ))
+    figure.add_trace(go.Scatter(
+        x=[max_row["time"]],
+        y=[max_row["value"]],
+        mode="markers",
+        marker=dict(color="#d00000", size=14, symbol="triangle-up"),
+        name="Max"
+    ))
     figure.update_layout(title=f"Wykres dla detektora: {selected_indicator} ({detector_id})")
-    # figure.update_layout(legend_title_text="Contestant")
     figure.update_xaxes(title_text="Data pomiaru")
     figure.update_yaxes(title_text="Wartość")
 
     state.display_figure = figure
+
 
 def menu_option_selected(state, id, payload):
     page_name = payload["args"][0]
