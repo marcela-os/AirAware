@@ -39,3 +39,12 @@ def get_nearest_stations(description, max_distance_km, stations_data):
 
 # new = get_nearest_stations("Kłodzko, ul. Szkolna", 200, wszystkie_stacje_pomiarowe)
 # print(new)
+
+def get_nearest_stations_by_coords(location_coords, max_distance_km, stations_data):
+    stations = []
+    for item in stations_data:
+        lat, lon, name = float(item[2]), float(item[3]), item[0]
+        dist = distance.distance(location_coords, (lat, lon)).km
+        if dist <= max_distance_km:
+            stations.append((round(dist, 2), name))
+    return sorted(stations, key=lambda x: x[0])

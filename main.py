@@ -17,6 +17,7 @@ globals()["on_station_select"] = callbacks.on_station_select
 globals()["on_detector_change"] = callbacks.on_detector_change
 globals()["reload_data"] = callbacks.reload_data
 globals()["menu_option_selected"] = callbacks.menu_option_selected
+globals()["on_slider_change"] = callbacks.on_slider_change
 
 data = DataStore()
 stations = data.stations
@@ -47,6 +48,7 @@ selected_detector = available_detectors[0] if available_detectors else None
 map_fig = generate_map(stations, aq_index)
 
 # Inicjalizacja danych
+km = 20
 search_query = ""
 filtered_locations = station_names
 station_data = ""
@@ -69,6 +71,7 @@ initial_state = SimpleNamespace(
     station_data=station_data,
     nearest_station_list=nearest_station_list,
     notification=notification,
+    km=km,
 )
 
 # Generowanie pierwszego wykresu

@@ -4,7 +4,7 @@ import taipy.gui.builder as tgb
 from taipy.gui import Icon
 from gui.callbacks import (on_input_change, on_station_change,
                            on_station_select,on_detector_change,
-                           reload_data, menu_option_selected)
+                           reload_data, menu_option_selected, on_slider_change)
 
 def create_gui():
     # Tworzenie strony GUI
@@ -18,14 +18,15 @@ def create_gui():
             with tgb.layout("50 50"):
                 with tgb.part(class_name="container text-center"):
                     tgb.input(label="Wpisz lokalizację (np. 'Dworzec Poznań')", value="{search_query}",
-                              on_change=on_input_change, width=500)
+                              on_change=on_input_change, width=500, change_delay=-1)
                     tgb.html("br")
                     tgb.selector(value="{selected_station}", lov="{filtered_locations}", dropdown=False,
                                  on_change=on_station_select, width="500px")
                 with tgb.part(class_name="container text-center"):
+                    tgb.slider(value="{km}", max=200, on_change=on_slider_change, step=10, change_delay=10)
                     tgb.text("{station_data}")
                     tgb.html("br")
-                    tgb.text("Stacje w promieniu 100 km:")
+                    # tgb.text("Stacje w promieniu 100 km:")
                     tgb.html("br")
                     tgb.text("{nearest_station_list}")
                     # GUI

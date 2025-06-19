@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 from air_monitor.utils.datastore import DataStore
-from air_monitor.utils.nearest_stations import get_nearest_stations
+from air_monitor.utils.nearest_stations import get_nearest_stations, get_nearest_stations_by_coords
 from air_monitor.utils.logic import get_detector_id_by_indicator, get_measurements_for_detector
 from taipy.gui import navigate
 
@@ -24,7 +24,7 @@ def on_input_change(state):
         state.nearest_station_list = ""
         return
 
-    nearest = get_nearest_stations(state.search_query, 100, state.stations)
+    nearest = get_nearest_stations(state.search_query, state.km, state.stations)
 
     # Lista podpowiedzi do selektora
     state.filtered_locations = [entry[1] for entry in nearest]
@@ -39,30 +39,40 @@ def on_station_select(state):
     :param state: Obiekt stanu GUI.
     :return: None
     """
+    print(f"On select: {state.selected_station}")
 
     selected_name = state.selected_station
     query = state.search_query.strip()
+    print(f"Query: {query}")
     # Dopisz pierwsze słowo z nazwy stacji jeśli nie ma query
     if not state.search_query.strip():
         query = selected_name.strip().split()[0]
 
     if query:
-        nearest = get_nearest_stations(query, 100, state.stations)
+        nearest = get_nearest_stations(query, state.km, state.stations)
         match = next(((dist, name) for dist, name in nearest if name == selected_name), None)
         if match:
             dist, name = match
             for s_name, s_id, lat, long in state.stations:
                 if s_name == name:
-                    state.station_data = f"Wybrana stacja: {name}\n Odległość od '{query}': {dist:.2f} km\nWspółrzędne: {lat}, {long}"
+                    state.station_data = (
+                        f"Wybrana stacja: {name}\n"
+                        f"Współrzędne: {lat}, {long}\n"
+                        f"Odległość od wyszukanej lokalizacji ('{query}'): {dist:.2f} km"
+                    )
                     state.filtered_locations = [entry[1] for entry in nearest]
 
                     # Pokazuj najbliższe stacje
                     state.nearest_station_list = [f"{dist:.1f} km - {name}" for dist, name in nearest[:5]]
                     return
-        # Fallback: bez query albo nie znaleziono dystansu
+    # Fallback: bez query albo nie znaleziono dystansu
     for s_name, s_id, lat, long in state.stations:
         if s_name == selected_name:
-            state.station_data = f"Wybrana stacja: {s_name}\n Współrzędne: {lat}, {long}\n(Brak danych o odległości – wpisz lokalizację)"
+            state.station_data = (
+                    f"Wybrana stacja: {s_name}\n"
+                    f"Współrzędne: {lat}, {long}\n"
+                    f"(Brak danych o odległości – wpisz poprawną lokalizację)"
+                )
             return
 
     state.station_data = "Nie znaleziono danych."
@@ -177,3 +187,23 @@ def menu_option_selected(state, id, payload):
 def reload_data(state):
     DataStore().reload()
     state.notification = "Dane zostały przeładowane."
+
+
+def on_slider_change(state):
+
+    result = [(lat, lon) for name, _, lat, lon in state.stations if name == state.selected_station]
+
+    if result:
+        lat, lon = result[0]
+        coords = (lat, lon)
+
+        # Najbliższe stacje w promieniu x km
+        nearest = get_nearest_stations_by_coords(coords, state.km, state.stations)
+
+        state.nearest_station_list = nearest
+        state.filtered_locations = [entry[1] for entry in nearest]
+
+
+        state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
+        state.station_data = f"Stacje w promieniu {state.km} km:"
+
