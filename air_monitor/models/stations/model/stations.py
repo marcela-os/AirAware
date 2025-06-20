@@ -48,7 +48,7 @@ class Station:
     def __eq__(self, other):
         return isinstance(other, Station) and (
             self.name, self.id, self.code, self.lat, self.lon, self.city, self.city.commune
-        ) == (other.name, other.id, other.code, other.lat, other.lon, other.city)
+        ) == (other.name, other.id, other.code, other.lat, other.lon, other.city, other.city.commune)
 
     def __hash__(self):
         return hash((self.name, self.id, self.code, self.lat, self.lon, self.city))
