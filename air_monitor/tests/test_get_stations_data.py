@@ -51,3 +51,5 @@ def test_get_stations_data(monkeypatch):
     assert result[0]["station_name"] == "Testowa"
     assert result[0]["lat"] == 50.061
     assert result[0]["province"] == "małopolskie"
+
+

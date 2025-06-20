@@ -12,6 +12,7 @@ def fetch_all_data():
     Funkcja pobiera dane z API GIOŚ
     :return: dict
     """
+
     with requests.Session() as s:
         stations = get_stations_data(s, __base_url)
         if not stations:
