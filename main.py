@@ -8,6 +8,8 @@ from chart import generate_map
 from air_monitor.utils.datastore import DataStore
 from air_monitor.utils.logic import map_detectors_to_stations
 from gui.pages import create_gui
+from air_monitor.database.data_handler import get_data_handler
+
 
 
 # Przypisanie callbacków do global scope wymagane przez Taipy GUI
@@ -54,6 +56,7 @@ filtered_locations = station_names
 station_data = ""
 nearest_station_list = ""
 notification = ""
+error_message_location = ""
 
 # Tymczasowy obiekt stanu z domyślnymi wartościami
 initial_state = SimpleNamespace(
@@ -72,6 +75,7 @@ initial_state = SimpleNamespace(
     nearest_station_list=nearest_station_list,
     notification=notification,
     km=km,
+    error_message_location=error_message_location
 )
 
 # Generowanie pierwszego wykresu
@@ -82,6 +86,8 @@ display_figure = initial_state.display_figure
 
 
 if __name__ == "__main__":
+    # Uruchomienie aplikacji
+    get_data_handler()
     # Uruchomienie GUI
     pages = create_gui()
     gui = tp.Gui(pages=pages)

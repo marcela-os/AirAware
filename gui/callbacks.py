@@ -24,7 +24,7 @@ def on_input_change(state):
         state.nearest_station_list = ""
         return
 
-    nearest = get_nearest_stations(state.search_query, state.km, state.stations)
+    nearest = get_nearest_stations(state.search_query, state.km, state.stations, state)
 
     # Lista podpowiedzi do selektora
     state.filtered_locations = [entry[1] for entry in nearest]
@@ -49,7 +49,7 @@ def on_station_select(state):
         query = selected_name.strip().split()[0]
 
     if query:
-        nearest = get_nearest_stations(query, state.km, state.stations)
+        nearest = get_nearest_stations(query, state.km, state.stations, state)
         match = next(((dist, name) for dist, name in nearest if name == selected_name), None)
         if match:
             dist, name = match
@@ -206,4 +206,3 @@ def on_slider_change(state):
 
         state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
         state.station_data = f"Stacje w promieniu {state.km} km:"
-

@@ -17,19 +17,19 @@ def create_gui():
             tgb.html("br")
             with tgb.layout("50 50"):
                 with tgb.part(class_name="container text-center"):
-                    tgb.input(label="Wpisz lokalizację (np. 'Dworzec Poznań')", value="{search_query}",
+                    tgb.input(label="Wpisz lokalizację (np. 'Dworzec Poznań') i wciśnij Enter", value="{search_query}",
                               on_change=on_input_change, width=500, change_delay=-1)
                     tgb.html("br")
                     tgb.selector(value="{selected_station}", lov="{filtered_locations}", dropdown=False,
                                  on_change=on_station_select, width="500px")
                 with tgb.part(class_name="container text-center"):
-                    tgb.slider(value="{km}", max=200, on_change=on_slider_change, step=10, change_delay=10)
+                    tgb.text("{error_message_location}")
+                    tgb.text("Wybierz odległość", mode="md")
+                    tgb.slider(value="{km}", max=200, on_change=on_slider_change, step=10, change_delay=10, propagate=True)
                     tgb.text("{station_data}")
                     tgb.html("br")
-                    # tgb.text("Stacje w promieniu 100 km:")
                     tgb.html("br")
                     tgb.text("{nearest_station_list}")
-                    # GUI
                     tgb.button("🔁 Odśwież dane", on_action=reload_data)
                     tgb.text("{notification}")
 

@@ -27,3 +27,8 @@
     height: 60vh;
     overflow-y: auto;
 }
+
+/* Text */
+.strong {
+    color: orange;
+}

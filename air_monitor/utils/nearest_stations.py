@@ -3,12 +3,15 @@ import certifi
 from geopy.geocoders import Nominatim
 from geopy import distance
 
+
 # Kontekst SSL z użyciem certyfikatów z certifi
 ctx = ssl.create_default_context(cafile=certifi.where())
 geolocator = Nominatim(user_agent="air_quality_app_Marcelina", ssl_context=ctx)
+# error_message_location = ""
+location = None
 
 
-def get_nearest_stations(description, max_distance_km, stations_data):
+def get_nearest_stations(description, max_distance_km, stations_data, state):
     """
     Returns a list of measuring stations within a specified distance from the specified location.
 
@@ -20,7 +23,9 @@ def get_nearest_stations(description, max_distance_km, stations_data):
     try:
         location = geolocator.geocode(description, timeout=10)
     except Exception as e:
-        raise RuntimeError(f"Geolocation failed: {e}")
+        state.error_message_location = "Brak połączenia z internetem"
+        print(state.error_message_location)
+        raise RuntimeError(f"Geolocation failed: {state.error_message_location}") from e
 
 
     if not location:
