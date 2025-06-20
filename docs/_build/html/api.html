@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>API Reference &#8212; AirAware v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=e160b93e"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="AirAware documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+</section>
+<section id="module-air_monitor.api_client">
+<span id="air-monitor-api-client"></span><h1>Air Monitor - API Client<a class="headerlink" href="#module-air_monitor.api_client" title="Link to this heading">¶</a></h1>
+<dl class="py function" id="module-air_monitor.api_client.air_data">
+<dt class="sig sig-object py" id="air_monitor.api_client.air_data.fetch_all_data">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.api_client.air_data.</span></span><span class="sig-name descname"><span class="pre">fetch_all_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/api_client/air_data.html#fetch_all_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.api_client.air_data.fetch_all_data" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja pobiera dane z API GIOŚ
+:return: dict</p>
+</dd></dl>
+
+<dl class="py function" id="module-air_monitor.api_client.aq_index_get">
+<dt class="sig sig-object py" id="air_monitor.api_client.aq_index_get.get_aq_index_data">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.api_client.aq_index_get.</span></span><span class="sig-name descname"><span class="pre">get_aq_index_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/api_client/aq_index_get.html#get_aq_index_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.api_client.aq_index_get.get_aq_index_data" title="Link to this definition">¶</a></dt>
+<dd><p>Pobiera dane indeksu jakości powietrza dla podanej stacji z API GIOŚ.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session</strong> – requests.Session</p></li>
+<li><p><strong>station_id</strong> – id stacji pomiarowej</p></li>
+<li><p><strong>base_url</strong> – url GIOŚ</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-air_monitor.api_client.measurement_get">
+<dt class="sig sig-object py" id="air_monitor.api_client.measurement_get.get_measurement_data">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.api_client.measurement_get.</span></span><span class="sig-name descname"><span class="pre">get_measurement_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensor_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/api_client/measurement_get.html#get_measurement_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.api_client.measurement_get.get_measurement_data" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja pobiera dane pomiarowe z sensora.
+:param session: requests.Session
+:param sensor_id: id sensora
+:param base_url: url GIOŚ
+:return: dict</p>
+</dd></dl>
+
+<dl class="py function" id="module-air_monitor.api_client.sensors_get">
+<dt class="sig sig-object py" id="air_monitor.api_client.sensors_get.get_sensors_data">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.api_client.sensors_get.</span></span><span class="sig-name descname"><span class="pre">get_sensors_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/api_client/sensors_get.html#get_sensors_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.api_client.sensors_get.get_sensors_data" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja pobiera sensory pomiarowe dla konkretnej stacji.
+:param session: requests.Session
+:param station_id: id stacji
+:param base_url: url GIOŚ
+:return: dict</p>
+</dd></dl>
+
+<dl class="py function" id="module-air_monitor.api_client.stations_get">
+<dt class="sig sig-object py" id="air_monitor.api_client.stations_get.get_stations_data">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.api_client.stations_get.</span></span><span class="sig-name descname"><span class="pre">get_stations_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/api_client/stations_get.html#get_stations_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.api_client.stations_get.get_stations_data" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja pobiera stacje pomiarowe.
+:param session: requests.Session
+:param base_url: url GIOŚ
+:return: dict</p>
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.database">
+<span id="air-monitor-database"></span><h1>Air Monitor - Database<a class="headerlink" href="#module-air_monitor.database" title="Link to this heading">¶</a></h1>
+<dl class="py function" id="module-air_monitor.database.data_handler">
+<dt class="sig sig-object py" id="air_monitor.database.data_handler.get_data_handler">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.data_handler.</span></span><span class="sig-name descname"><span class="pre">get_data_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/data_handler.html#get_data_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.data_handler.get_data_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja pobiera dane z API, tworzy bazę danych (jeśli nie istnieje) i zapisuje dane.
+:return: tuple[list, list, list, list]
+:raises RuntimeError:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Gdy wystąpi błąd połączenia z bazą danych lub problem z danymi z API.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function" id="module-air_monitor.database.db_manager">
+<dt class="sig sig-object py" id="air_monitor.database.db_manager.create_db">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.db_manager.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/db_manager.html#create_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.db_manager.create_db" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja sprawdza czy tabela o podanej nazwie istnieje a jeśli nie to tworzy ją.
+:param c: sqlite3.Cursor
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.database.db_manager.save_aq_index">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.db_manager.</span></span><span class="sig-name descname"><span class="pre">save_aq_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aq_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/db_manager.html#save_aq_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.db_manager.save_aq_index" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja zapisuje indeks jakości powietrza do tabeli <cite>aq_index</cite>.
+:param cursor: sqlite3.Cursor
+:param aq_data: list zawierający dane indeksu jakości powietrza
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.database.db_manager.save_aq_index_param">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.db_manager.</span></span><span class="sig-name descname"><span class="pre">save_aq_index_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aq_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/db_manager.html#save_aq_index_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.db_manager.save_aq_index_param" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja zapisuje parametry indeksu jakości powietrza do tabeli <cite>aq_indexParam</cite>.
+:param cursor: sqlite3.Cursor
+:param aq_data: list zawierający dane indeksu jakości powietrza
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.database.db_manager.save_detectors_and_measurements">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.db_manager.</span></span><span class="sig-name descname"><span class="pre">save_detectors_and_measurements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/db_manager.html#save_detectors_and_measurements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.db_manager.save_detectors_and_measurements" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja zapisuje parametry czujników oraz odpowiadającym im pomiarom do tabel <cite>detector</cite>. i <cite>measurement</cite>.
+:param cursor: sqlite3.Cursor
+:param detectors: list zawierający dane czujników
+:param measurements: list zawierający dane pomiarowe z czujników
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.database.db_manager.save_stations">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.db_manager.</span></span><span class="sig-name descname"><span class="pre">save_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/db_manager.html#save_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.db_manager.save_stations" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja zapisuje dane pojedynczej stacji do tabeli <cite>stations</cite>.
+:param cursor: sqlite3.Cursor
+:param stations: list zawierający dane stacji
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.database.db_manager.save_to_db">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.database.db_manager.</span></span><span class="sig-name descname"><span class="pre">save_to_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aq_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/database/db_manager.html#save_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.database.db_manager.save_to_db" title="Link to this definition">¶</a></dt>
+<dd><p>Zapisuje dane pobrane z API do bazy SQLite.
+:param stations: list[Stations]
+:param detectors: list[Detectors]
+:param measurements: list[Measurements]
+:param aq_index: list[AQIndex]
+:param cursor: sqlite3.Cursor
+:return: None</p>
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models">
+<span id="air-monitor-models"></span><h1>Air Monitor – Models<a class="headerlink" href="#module-air_monitor.models" title="Link to this heading">¶</a></h1>
+<section id="module-air_monitor.models.aq_index">
+<span id="aq-index-package"></span><h2>aq_index package<a class="headerlink" href="#module-air_monitor.models.aq_index" title="Link to this heading">¶</a></h2>
+<section id="module-air_monitor.models.aq_index.convert">
+<span id="convert-module"></span><h3>convert module<a class="headerlink" href="#module-air_monitor.models.aq_index.convert" title="Link to this heading">¶</a></h3>
+<dl class="py function" id="module-air_monitor.models.aq_index.convert.converter">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.convert.converter.converter_aq_index">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.models.aq_index.convert.converter.</span></span><span class="sig-name descname"><span class="pre">converter_aq_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/aq_index/convert/converter.html#converter_aq_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.aq_index.convert.converter.converter_aq_index" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja umożliwiająca konwersję danych indeksu jakości powietrza do modelu obiektowego.
+:param data: dict
+:return: list[AqIndex]</p>
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models.aq_index.model">
+<span id="model-module"></span><h3>model module<a class="headerlink" href="#module-air_monitor.models.aq_index.model" title="Link to this heading">¶</a></h3>
+<section id="module-air_monitor.models.aq_index.model.aq_index">
+<span id="aq-index"></span><h4>aq_index<a class="headerlink" href="#module-air_monitor.models.aq_index.model.aq_index" title="Link to this heading">¶</a></h4>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.aq_index.model.aq_index.</span></span><span class="sig-name descname"><span class="pre">AqIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_data_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">critical_pollution_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/aq_index/model/aq_index.html#AqIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje indeks jakości powietrza dla stacji pomiarowej.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.calc_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calc_date</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.calc_date" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.critical_pollution_code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">critical_pollution_code</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.critical_pollution_code" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.param">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.param" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.source_data_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_data_date</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.source_data_date" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.station_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">station_id</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.station_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.AqIndex.value_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value_index</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.AqIndex.value_index" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.aq_index.DateFormat">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.aq_index.model.aq_index.</span></span><span class="sig-name descname"><span class="pre">DateFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/aq_index/model/aq_index.html#DateFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.aq_index.model.aq_index.DateFormat" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa zgłasza wyjątek przy niepoprawnym formacie daty</p>
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models.aq_index.model.value_aq">
+<span id="value-aq"></span><h4>value_aq<a class="headerlink" href="#module-air_monitor.models.aq_index.model.value_aq" title="Link to this heading">¶</a></h4>
+<dl class="py exception">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.DateFormat">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.aq_index.model.value_aq.</span></span><span class="sig-name descname"><span class="pre">DateFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/aq_index/model/value_aq.html#DateFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.DateFormat" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa zgłasza wyjątek przy niepoprawnym formacie daty</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.ValueAQ">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.aq_index.model.value_aq.</span></span><span class="sig-name descname"><span class="pre">ValueAQ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/aq_index/model/value_aq.html#ValueAQ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.ValueAQ" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje indeks jakości powietrza dla wybranego parametru.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.ValueAQ.calc_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calc_date</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.ValueAQ.calc_date" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.ValueAQ.cat_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cat_name</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.ValueAQ.cat_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.ValueAQ.index_value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index_value</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.ValueAQ.index_value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.ValueAQ.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.ValueAQ.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.aq_index.model.value_aq.ValueAQ.source_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_date</span></span><a class="headerlink" href="#air_monitor.models.aq_index.model.value_aq.ValueAQ.source_date" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="measurement-package">
+<h2>measurement package<a class="headerlink" href="#measurement-package" title="Link to this heading">¶</a></h2>
+<section id="module-air_monitor.models.measurement">
+<span id="id1"></span><h3>convert module<a class="headerlink" href="#module-air_monitor.models.measurement" title="Link to this heading">¶</a></h3>
+<dl class="py function" id="module-air_monitor.models.measurement.convert.converter">
+<span id="module-air_monitor.models.measurement.convert"></span><dt class="sig sig-object py" id="air_monitor.models.measurement.convert.converter.converter_measurement">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.models.measurement.convert.converter.</span></span><span class="sig-name descname"><span class="pre">converter_measurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/measurement/convert/converter.html#converter_measurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.measurement.convert.converter.converter_measurement" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja umożliwiająca konwersję danych do modelu obiektowego.
+:param data: dict
+:return: list[Value]</p>
+</dd></dl>
+
+</section>
+<section id="id2">
+<h3>model module<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<section id="module-air_monitor.models.measurement.model.data">
+<span id="data"></span><span id="module-air_monitor.models.measurement.model"></span><h4>data<a class="headerlink" href="#module-air_monitor.models.measurement.model.data" title="Link to this heading">¶</a></h4>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.data.Data">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.measurement.model.data.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/measurement/model/data.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.measurement.model.data.Data" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje zestaw pomiarów przypisanych do konkretnego czujnika.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.data.Data.key">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#air_monitor.models.measurement.model.data.Data.key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.data.Data.values">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">values</span></span><a class="headerlink" href="#air_monitor.models.measurement.model.data.Data.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models.measurement.model.value">
+<span id="value"></span><h4>value<a class="headerlink" href="#module-air_monitor.models.measurement.model.value" title="Link to this heading">¶</a></h4>
+<dl class="py exception">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.value.DateFormat">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.measurement.model.value.</span></span><span class="sig-name descname"><span class="pre">DateFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/measurement/model/value.html#DateFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.measurement.model.value.DateFormat" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa zgłasza wyjątek przy niepoprawnym formacie daty</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.value.Value">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.measurement.model.value.</span></span><span class="sig-name descname"><span class="pre">Value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/measurement/model/value.html#Value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.measurement.model.value.Value" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje pojedynczy pomiar wykonany przez czujnik.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.value.Value.code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">code</span></span><a class="headerlink" href="#air_monitor.models.measurement.model.value.Value.code" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.value.Value.date_value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">date_value</span></span><a class="headerlink" href="#air_monitor.models.measurement.model.value.Value.date_value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.measurement.model.value.Value.value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#air_monitor.models.measurement.model.value.Value.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-air_monitor.models.sensors">
+<span id="sensors-package"></span><h2>sensors package<a class="headerlink" href="#module-air_monitor.models.sensors" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3>convert module<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="py function" id="module-air_monitor.models.sensors.convert.converter">
+<span id="module-air_monitor.models.sensors.convert"></span><dt class="sig sig-object py" id="air_monitor.models.sensors.convert.converter.converter_sensors">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.models.sensors.convert.converter.</span></span><span class="sig-name descname"><span class="pre">converter_sensors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/sensors/convert/converter.html#converter_sensors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.sensors.convert.converter.converter_sensors" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja umożliwiająca konwersję danych do modelu obiektowego.
+:param data: dict
+:return: list[Sensor]</p>
+</dd></dl>
+
+</section>
+<section id="id4">
+<h3>model module<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<section id="parameters">
+<span id="module-air_monitor.models.sensors.model"></span><h4>parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h4>
+<dl class="py class" id="module-air_monitor.models.sensors.model.parameters">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.parameters.Param">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.sensors.model.parameters.</span></span><span class="sig-name descname"><span class="pre">Param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formula</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/sensors/model/parameters.html#Param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.sensors.model.parameters.Param" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje parametr pomiarowy z nazwą, wzorem, kodem i identyfikatorem.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.parameters.Param.code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">code</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.parameters.Param.code" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.parameters.Param.formula">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">formula</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.parameters.Param.formula" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.parameters.Param.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.parameters.Param.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.parameters.Param.param_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_id</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.parameters.Param.param_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models.sensors.model.sensor">
+<span id="sensor"></span><h4>sensor<a class="headerlink" href="#module-air_monitor.models.sensors.model.sensor" title="Link to this heading">¶</a></h4>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.sensor.Sensor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.sensors.model.sensor.</span></span><span class="sig-name descname"><span class="pre">Sensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/sensors/model/sensor.html#Sensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.sensors.model.sensor.Sensor" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje sensor przypisany do stacji i parametru pomiarowego.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.sensor.Sensor.param">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.sensor.Sensor.param" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.sensor.Sensor.sensor_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensor_id</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.sensor.Sensor.sensor_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.sensors.model.sensor.Sensor.station_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">station_id</span></span><a class="headerlink" href="#air_monitor.models.sensors.model.sensor.Sensor.station_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-air_monitor.models.stations">
+<span id="stations-package"></span><h2>stations package<a class="headerlink" href="#module-air_monitor.models.stations" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h3>convert module<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<dl class="py function" id="module-air_monitor.models.stations.convert.converter">
+<span id="module-air_monitor.models.stations.convert"></span><dt class="sig sig-object py" id="air_monitor.models.stations.convert.converter.converter_station">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.models.stations.convert.converter.</span></span><span class="sig-name descname"><span class="pre">converter_station</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/stations/convert/converter.html#converter_station"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.stations.convert.converter.converter_station" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja umożliwiająca konwersję danych do modelu obiektowego.
+:param data: dict
+:return: list[Station]</p>
+</dd></dl>
+
+</section>
+<section id="id6">
+<h3>model module<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<section id="module-air_monitor.models.stations.model.city">
+<span id="city"></span><span id="module-air_monitor.models.stations.model"></span><h4>city<a class="headerlink" href="#module-air_monitor.models.stations.model.city" title="Link to this heading">¶</a></h4>
+<p>Moduł zawiera klase reprezentującą miasto.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.city.City">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.stations.model.city.</span></span><span class="sig-name descname"><span class="pre">City</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">street</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commune</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/stations/model/city.html#City"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.stations.model.city.City" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentująca miasto.
+Zwraca string z nazwą miasta oraz id miasta.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.city.City.commune">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commune</span></span><a class="headerlink" href="#air_monitor.models.stations.model.city.City.commune" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.city.City.id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#air_monitor.models.stations.model.city.City.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.city.City.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#air_monitor.models.stations.model.city.City.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.city.City.street">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">street</span></span><a class="headerlink" href="#air_monitor.models.stations.model.city.City.street" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models.stations.model.commune">
+<span id="commune"></span><h4>commune<a class="headerlink" href="#module-air_monitor.models.stations.model.commune" title="Link to this heading">¶</a></h4>
+<p>Moduł zawiera klase reprezentującą gminę.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.commune.Commune">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.stations.model.commune.</span></span><span class="sig-name descname"><span class="pre">Commune</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">district</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">province</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/stations/model/commune.html#Commune"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.stations.model.commune.Commune" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentująca gminę.
+Zwraca string z nazwą gminy, powiatem i województwem.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.commune.Commune.district">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">district</span></span><a class="headerlink" href="#air_monitor.models.stations.model.commune.Commune.district" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.commune.Commune.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#air_monitor.models.stations.model.commune.Commune.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.commune.Commune.province">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">province</span></span><a class="headerlink" href="#air_monitor.models.stations.model.commune.Commune.province" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-air_monitor.models.stations.model.stations">
+<span id="stations"></span><h4>stations<a class="headerlink" href="#module-air_monitor.models.stations.model.stations" title="Link to this heading">¶</a></h4>
+<p>Moduł zawiera klase reprezentującą daną stację.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.models.stations.model.stations.</span></span><span class="sig-name descname"><span class="pre">Station</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/models/stations/model/stations.html#Station"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentująca stację.
+Zwraca string z nazwą stacji, id, szerokością geograficzną oraz informacjami o mieście i gminie.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station.city">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">city</span></span><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station.city" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station.code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">code</span></span><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station.code" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station.id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station.lat">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lat</span></span><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station.lat" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station.lon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lon</span></span><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station.lon" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="air_monitor.models.stations.model.stations.Station.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#air_monitor.models.stations.model.stations.Station.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+</section>
+<section id="module-air_monitor.tests">
+<span id="air-monitor-tests"></span><h1>Air Monitor - Tests<a class="headerlink" href="#module-air_monitor.tests" title="Link to this heading">¶</a></h1>
+</section>
+<section id="module-air_monitor.utils">
+<span id="air-monitor-utils"></span><h1>Air Monitor - Utils<a class="headerlink" href="#module-air_monitor.utils" title="Link to this heading">¶</a></h1>
+<p id="module-air_monitor.utils.datastore">Pobieranie danych z bazy</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.utils.datastore.DataStore">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.utils.datastore.</span></span><span class="sig-name descname"><span class="pre">DataStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/datastore.html#DataStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.datastore.DataStore" title="Link to this definition">¶</a></dt>
+<dd><p>Klasa reprezentuje magazyn danych, ładując i przechowując dane pomiarowe i stacje.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="air_monitor.utils.datastore.DataStore.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/datastore.html#DataStore.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.datastore.DataStore.reload" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="air_monitor.utils.datastore.Singleton">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">air_monitor.utils.datastore.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><a class="reference internal" href="_modules/air_monitor/utils/datastore.html#Singleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.datastore.Singleton" title="Link to this definition">¶</a></dt>
+<dd><p>Metaklasa zapewniająca wzorzec singleton.</p>
+</dd></dl>
+
+<p id="module-air_monitor.utils.database">Dostęp do bazy danych (fetch functions)</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.database.fetch_detectors">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.database.</span></span><span class="sig-name descname"><span class="pre">fetch_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/database.html#fetch_detectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.database.fetch_detectors" title="Link to this definition">¶</a></dt>
+<dd><p>Pobiera wszystkie detektory z bazy danych.
+:return: list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.database.fetch_latest_or_today_aq_index">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.database.</span></span><span class="sig-name descname"><span class="pre">fetch_latest_or_today_aq_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/database.html#fetch_latest_or_today_aq_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.database.fetch_latest_or_today_aq_index" title="Link to this definition">¶</a></dt>
+<dd><p>Pobiera pomiar indexLevelName dla każdej stacji:
+- z dzisiejszej daty i najpóźniejszej godziny, jeśli jest,
+- lub jeśli nie ma, to z najnowszej dostępnej daty i godziny.
+:return: list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.database.fetch_measurements">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.database.</span></span><span class="sig-name descname"><span class="pre">fetch_measurements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/database.html#fetch_measurements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.database.fetch_measurements" title="Link to this definition">¶</a></dt>
+<dd><p>Pobiera wszystkie pamiary z bazy danych.
+:return: list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.database.fetch_stations">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.database.</span></span><span class="sig-name descname"><span class="pre">fetch_stations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/database.html#fetch_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.database.fetch_stations" title="Link to this definition">¶</a></dt>
+<dd><p>Pobiera wszystkie stacje z bazy danych.
+:return: list</p>
+</dd></dl>
+
+<p id="module-air_monitor.utils.helpers">Funkcje pomocnicze</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.helpers.safe_get">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">safe_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/helpers.html#safe_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.helpers.safe_get" title="Link to this definition">¶</a></dt>
+<dd><p>Funkcja sprawdza wartość z obiektu typu dict czy nie jest None, pustą listą,
+pustym stringiem lub pustym słownikiem i zwraca tę wartość, w przeciwnym wypadku zwraca string ‘None’.
+:param data: dict
+:param field: klucz, którego wartość ma zostać pobrana
+:return: value lub ‘None’</p>
+</dd></dl>
+
+<p id="module-air_monitor.utils.logic">Funkcje mapujące</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.logic.get_detector_id_by_indicator">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.logic.</span></span><span class="sig-name descname"><span class="pre">get_detector_id_by_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_detector_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/logic.html#get_detector_id_by_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.logic.get_detector_id_by_indicator" title="Link to this definition">¶</a></dt>
+<dd><p>Zwraca ID detektora dla danego wskaźnika i stacji.
+:param station_name: str
+:param indicator: str
+:param station_detector_map: dict
+:return: int | None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.logic.get_measurements_for_detector">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.logic.</span></span><span class="sig-name descname"><span class="pre">get_measurements_for_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/logic.html#get_measurements_for_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.logic.get_measurements_for_detector" title="Link to this definition">¶</a></dt>
+<dd><p>Wyszukuje najnowsze pomiary dla danego detektora.
+:param detector_id: int
+:param measurements: list
+:return: list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.logic.map_detectors_to_stations">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.logic.</span></span><span class="sig-name descname"><span class="pre">map_detectors_to_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/logic.html#map_detectors_to_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.logic.map_detectors_to_stations" title="Link to this definition">¶</a></dt>
+<dd><p>Tworzy słownik z stacjami i przypisanymi do nich detektorami.
+:param stations: list
+:param detectors: list
+:return: dict</p>
+</dd></dl>
+
+<dl class="py function" id="module-air_monitor.utils.nearest_stations">
+<dt class="sig sig-object py" id="air_monitor.utils.nearest_stations.get_nearest_stations">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.nearest_stations.</span></span><span class="sig-name descname"><span class="pre">get_nearest_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance_km</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stations_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/nearest_stations.html#get_nearest_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.nearest_stations.get_nearest_stations" title="Link to this definition">¶</a></dt>
+<dd><p>Zwraca listę stacji pomiarowych w określonej odległości od lokalizacji.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>description</strong> – str</p></li>
+<li><p><strong>max_distance_km</strong> – float</p></li>
+<li><p><strong>stations_data</strong> – list</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="air_monitor.utils.nearest_stations.get_nearest_stations_by_coords">
+<span class="sig-prename descclassname"><span class="pre">air_monitor.utils.nearest_stations.</span></span><span class="sig-name descname"><span class="pre">get_nearest_stations_by_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance_km</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stations_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/air_monitor/utils/nearest_stations.html#get_nearest_stations_by_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#air_monitor.utils.nearest_stations.get_nearest_stations_by_coords" title="Link to this definition">¶</a></dt>
+<dd><p>Znajduje stacje w określonej odległości od podanych współrzędnych.
+:param location_coords: tuple
+:param max_distance_km: float
+:param stations_data: list
+:return: list</p>
+</dd></dl>
+
+<section id="module-gui.pages">
+<span id="gui-pages"></span><h2>GUI Pages<a class="headerlink" href="#module-gui.pages" title="Link to this heading">¶</a></h2>
+<p>Funkcja tworząca strony gui</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.pages.create_gui">
+<span class="sig-prename descclassname"><span class="pre">gui.pages.</span></span><span class="sig-name descname"><span class="pre">create_gui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/pages.html#create_gui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.pages.create_gui" title="Link to this definition">¶</a></dt>
+<dd><p>Tworzy i zwraca słownik stron GUI zdefiniowanych w aplikacji.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict stron GUI</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gui.callbacks">
+<span id="gui-callbacks"></span><h2>GUI Callbacks<a class="headerlink" href="#module-gui.callbacks" title="Link to this heading">¶</a></h2>
+<p>Funkcje reagujące na zmiany stanu GUI</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.menu_option_selected">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">menu_option_selected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#menu_option_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.menu_option_selected" title="Link to this definition">¶</a></dt>
+<dd><p>Obsługuje wybór opcji menu i nawigację do strony.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> – object</p></li>
+<li><p><strong>id</strong> – any</p></li>
+<li><p><strong>payload</strong> – dict</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.on_detector_change">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">on_detector_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#on_detector_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.on_detector_change" title="Link to this definition">¶</a></dt>
+<dd><p>Aktualizuje wykres na podstawie wybranego detektora.
+:param state: Obiekt stanu GUI.
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.on_input_change">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">on_input_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#on_input_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.on_input_change" title="Link to this definition">¶</a></dt>
+<dd><p>Aktualizuje dane na podstawie wpisanej stacji.
+:param state: Obiekt stanu GUI.
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.on_slider_change">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">on_slider_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#on_slider_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.on_slider_change" title="Link to this definition">¶</a></dt>
+<dd><p>Aktualizuje listę najbliższych stacji na podstawie suwaka odległości.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.on_station_change">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">on_station_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#on_station_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.on_station_change" title="Link to this definition">¶</a></dt>
+<dd><p>Obsługuje zmianę wybranej stacji.
+:param state: Obiekt stanu GUI.
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.on_station_select">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">on_station_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#on_station_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.on_station_select" title="Link to this definition">¶</a></dt>
+<dd><p>Aktualizuje dane na podstawie wybranej stacji.
+:param state: Obiekt stanu GUI.
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gui.callbacks.reload_data">
+<span class="sig-prename descclassname"><span class="pre">gui.callbacks.</span></span><span class="sig-name descname"><span class="pre">reload_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/callbacks.html#reload_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.callbacks.reload_data" title="Link to this definition">¶</a></dt>
+<dd><p>Przeładowuje dane w DataStore i ustawia powiadomienie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-chart">
+<span id="chart-module"></span><h2>Chart Module<a class="headerlink" href="#module-chart" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="chart.generate_map">
+<span class="sig-prename descclassname"><span class="pre">chart.</span></span><span class="sig-name descname"><span class="pre">generate_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aq_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chart.html#generate_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chart.generate_map" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-main">
+<span id="main-module"></span><h2>Main Module<a class="headerlink" href="#module-main" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">AirAware</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-air_monitor.api_client">Air Monitor - API Client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.api_client.air_data.fetch_all_data"><code class="docutils literal notranslate"><span class="pre">fetch_all_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.api_client.aq_index_get.get_aq_index_data"><code class="docutils literal notranslate"><span class="pre">get_aq_index_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.api_client.measurement_get.get_measurement_data"><code class="docutils literal notranslate"><span class="pre">get_measurement_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.api_client.sensors_get.get_sensors_data"><code class="docutils literal notranslate"><span class="pre">get_sensors_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.api_client.stations_get.get_stations_data"><code class="docutils literal notranslate"><span class="pre">get_stations_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#module-air_monitor.database">Air Monitor - Database</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.data_handler.get_data_handler"><code class="docutils literal notranslate"><span class="pre">get_data_handler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.db_manager.create_db"><code class="docutils literal notranslate"><span class="pre">create_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.db_manager.save_aq_index"><code class="docutils literal notranslate"><span class="pre">save_aq_index()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.db_manager.save_aq_index_param"><code class="docutils literal notranslate"><span class="pre">save_aq_index_param()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.db_manager.save_detectors_and_measurements"><code class="docutils literal notranslate"><span class="pre">save_detectors_and_measurements()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.db_manager.save_stations"><code class="docutils literal notranslate"><span class="pre">save_stations()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.database.db_manager.save_to_db"><code class="docutils literal notranslate"><span class="pre">save_to_db()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#module-air_monitor.models">Air Monitor – Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-air_monitor.models.aq_index">aq_index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#measurement-package">measurement package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-air_monitor.models.sensors">sensors package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-air_monitor.models.stations">stations package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#module-air_monitor.tests">Air Monitor - Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-air_monitor.utils">Air Monitor - Utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.datastore.DataStore"><code class="docutils literal notranslate"><span class="pre">DataStore</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.datastore.Singleton"><code class="docutils literal notranslate"><span class="pre">Singleton</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.database.fetch_detectors"><code class="docutils literal notranslate"><span class="pre">fetch_detectors()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.database.fetch_latest_or_today_aq_index"><code class="docutils literal notranslate"><span class="pre">fetch_latest_or_today_aq_index()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.database.fetch_measurements"><code class="docutils literal notranslate"><span class="pre">fetch_measurements()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.database.fetch_stations"><code class="docutils literal notranslate"><span class="pre">fetch_stations()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.helpers.safe_get"><code class="docutils literal notranslate"><span class="pre">safe_get()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.logic.get_detector_id_by_indicator"><code class="docutils literal notranslate"><span class="pre">get_detector_id_by_indicator()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.logic.get_measurements_for_detector"><code class="docutils literal notranslate"><span class="pre">get_measurements_for_detector()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.logic.map_detectors_to_stations"><code class="docutils literal notranslate"><span class="pre">map_detectors_to_stations()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.nearest_stations.get_nearest_stations"><code class="docutils literal notranslate"><span class="pre">get_nearest_stations()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#air_monitor.utils.nearest_stations.get_nearest_stations_by_coords"><code class="docutils literal notranslate"><span class="pre">get_nearest_stations_by_coords()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-gui.pages">GUI Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-gui.callbacks">GUI Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-chart">Chart Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-main">Main Module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">AirAware documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, marcela-os.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

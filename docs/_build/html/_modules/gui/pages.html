@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gui.pages &#8212; AirAware v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=e160b93e"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for gui.pages</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Funkcja tworząca strony gui&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">taipy.gui.builder</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tgb</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taipy.gui</span><span class="w"> </span><span class="kn">import</span> <span class="n">Icon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gui.callbacks</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">on_input_change</span><span class="p">,</span> <span class="n">on_station_change</span><span class="p">,</span>
+                           <span class="n">on_station_select</span><span class="p">,</span><span class="n">on_detector_change</span><span class="p">,</span>
+                           <span class="n">reload_data</span><span class="p">,</span> <span class="n">menu_option_selected</span><span class="p">,</span> <span class="n">on_slider_change</span><span class="p">)</span>
+
+<div class="viewcode-block" id="create_gui">
+<a class="viewcode-back" href="../../api.html#gui.pages.create_gui">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_gui</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tworzy i zwraca słownik stron GUI zdefiniowanych w aplikacji.</span>
+
+<span class="sd">    :return: dict stron GUI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Tworzenie strony GUI</span>
+    <span class="c1"># Strona Home</span>
+    <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">Page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">home</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">part</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;container text-center&quot;</span><span class="p">):</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s2">&quot;assets/logo.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;10vw&quot;</span><span class="p">)</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;# Wybierz lokalizacje&quot;</span><span class="p">,</span>
+                     <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">)</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">html</span><span class="p">(</span><span class="s2">&quot;br&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s2">&quot;50 50&quot;</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">part</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;container text-center&quot;</span><span class="p">):</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Wpisz lokalizację (np. &#39;Dworzec Poznań&#39;) i wciśnij Enter&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{search_query}</span><span class="s2">&quot;</span><span class="p">,</span>
+                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_input_change</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">change_delay</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">html</span><span class="p">(</span><span class="s2">&quot;br&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">selector</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{selected_station}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lov</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{filtered_locations}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dropdown</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                 <span class="n">on_change</span><span class="o">=</span><span class="n">on_station_select</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">part</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;container text-center&quot;</span><span class="p">):</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{error_message_location}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Wybierz odległość&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">slider</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{km}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_slider_change</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">change_delay</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{station_data}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">html</span><span class="p">(</span><span class="s2">&quot;br&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">html</span><span class="p">(</span><span class="s2">&quot;br&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{nearest_station_list}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;🔁 Odśwież dane&quot;</span><span class="p">,</span> <span class="n">on_action</span><span class="o">=</span><span class="n">reload_data</span><span class="p">)</span>
+                    <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{notification}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Strona 1</span>
+    <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">Page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/page1&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">page1</span><span class="p">:</span>
+        <span class="c1"># with tgb.Page(name=&quot;Chart&quot;, label=&quot;Chart&quot;, route=&quot;/&quot;):</span>
+        <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">part</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;container text-center&quot;</span><span class="p">):</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s2">&quot;assets/logo.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;10vw&quot;</span><span class="p">)</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;# Statystyki&quot;</span><span class="p">,</span>
+                     <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s2">&quot;20 80&quot;</span><span class="p">):</span>
+                <span class="n">tgb</span><span class="o">.</span><span class="n">selector</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Stacja&quot;</span><span class="p">,</span>
+                             <span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;fullwidth&quot;</span><span class="p">,</span>
+                             <span class="n">value</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{selected_station}</span><span class="s2">&quot;</span><span class="p">,</span>
+                             <span class="n">lov</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{station_names}</span><span class="s2">&quot;</span><span class="p">,</span>
+                             <span class="n">on_change</span><span class="o">=</span><span class="n">on_station_change</span><span class="p">,</span>
+                             <span class="n">dropdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">tgb</span><span class="o">.</span><span class="n">selector</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;detectors&quot;</span><span class="p">,</span>
+                             <span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;fullwidth&quot;</span><span class="p">,</span>
+                             <span class="n">value</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{selected_detector}</span><span class="s2">&quot;</span><span class="p">,</span>
+                             <span class="n">lov</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{available_detectors}</span><span class="s2">&quot;</span><span class="p">,</span>
+                             <span class="n">on_change</span><span class="o">=</span><span class="n">on_detector_change</span><span class="p">,</span>
+                             <span class="n">dropdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">chart</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{display_figure}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s2">&quot;5 5 5 5 5&quot;</span><span class="p">):</span>
+                <span class="n">tgb</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s2">&quot;assets/logo.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;3vw&quot;</span><span class="p">)</span>
+                <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+    <span class="c1"># Strona 2</span>
+    <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">Page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/page2&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">page2</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">part</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;container text-center&quot;</span><span class="p">):</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s2">&quot;assets/logo.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;10vw&quot;</span><span class="p">)</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;# Indeks jakości powietrza&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">)</span>
+            <span class="n">tgb</span><span class="o">.</span><span class="n">chart</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{map_fig}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Menu</span>
+    <span class="k">with</span> <span class="n">tgb</span><span class="o">.</span><span class="n">Page</span><span class="p">()</span> <span class="k">as</span> <span class="n">root_page</span><span class="p">:</span>
+        <span class="n">tgb</span><span class="o">.</span><span class="n">menu</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">,</span>
+            <span class="n">lov</span><span class="o">=</span><span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">,</span> <span class="n">Icon</span><span class="p">(</span><span class="s2">&quot;assets/house.png&quot;</span><span class="p">,</span> <span class="s2">&quot;Home&quot;</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s2">&quot;page1&quot;</span><span class="p">,</span> <span class="n">Icon</span><span class="p">(</span><span class="s2">&quot;assets/chart.png&quot;</span><span class="p">,</span> <span class="s2">&quot;Statystyki&quot;</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s2">&quot;page2&quot;</span><span class="p">,</span> <span class="n">Icon</span><span class="p">(</span><span class="s2">&quot;assets/map.png&quot;</span><span class="p">,</span> <span class="s2">&quot;Mapa&quot;</span><span class="p">)),</span>
+            <span class="p">],</span>
+            <span class="n">on_action</span><span class="o">=</span><span class="n">menu_option_selected</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">pages</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;/&quot;</span><span class="p">:</span> <span class="n">root_page</span><span class="p">,</span> <span class="s2">&quot;home&quot;</span><span class="p">:</span> <span class="n">home</span><span class="p">,</span> <span class="s2">&quot;page1&quot;</span><span class="p">:</span> <span class="n">page1</span><span class="p">,</span> <span class="s2">&quot;page2&quot;</span><span class="p">:</span> <span class="n">page2</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">pages</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">AirAware</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, marcela-os.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

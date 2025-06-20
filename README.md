@@ -4,7 +4,6 @@
 App for monitoring air quality in Poland.
 Application using data from the General Inspectorate for Environmental Protection (GIOŚ).
 
----
 
 ## 🛠️ Functions
 
@@ -18,15 +17,15 @@ Application using data from the General Inspectorate for Environmental Protectio
 - Provides simple data analysis: minimum, maximum, average, and trends.
 - Uses Singleton pattern to manage and reload data.
 - Handles connection errors gracefully and informs the user accordingly.
+- Falls back to historical data from the local database when no internet connection is available.
 - Modular codebase with clear logical separation (e.g., data fetching, storage, GUI, analysis).
 - Equipped with comprehensive docstrings and unit tests.
 
 
----
 
 ## 🚀 Tech Stack
 
- - Python 3.12.10
+ - [Python 3.12.10](https://www.python.org/downloads/release/python-31210/)
  - SQLite for local data storage
  - Requests for REST API calls
  - Pandas for data manipulation
@@ -34,7 +33,7 @@ Application using data from the General Inspectorate for Environmental Protectio
  - Plotly for charts 
  - GUI framework Taipy
 
----
+
 ##  🧑‍💻 Usage
 
 Select a monitoring station from the full list or filter by city name.
@@ -49,8 +48,9 @@ Perform simple statistical analyses on measurement data (min, max, average, tren
 
 If live data is unavailable due to connection issues, the app can use stored data in database.
 
----
+
 ## 🏃🏻‍♀️ Installation & run
+
 
 Instalation
 * Clone the repository
@@ -72,7 +72,31 @@ Instalation
 ```bash
   python main.py
 ```
----
+
+
+## 📖 Documentation
+
+
+This project uses [Sphinx](https://www.sphinx-doc.org/) to generate documentation from Python docstrings.
+
+To build the documentation locally
+
+```bash
+  cd docs
+  make html
+```
+After building, open the documentation in your web browser
+
+On macOS/Linux
+```bash
+  open _build/html/index.html
+```
+On Windows:
+```bash
+  start _build\html\index.html
+```
+Alternatively, you can manually open the file _build/html/index.html in any browser.
+
 
 ## ˙✧˖° Author ˙✧˖°
 

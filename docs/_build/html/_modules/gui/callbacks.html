@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gui.callbacks &#8212; AirAware v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=e160b93e"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for gui.callbacks</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Funkcje reagujące na zmiany stanu GUI &quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objs</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">air_monitor.utils.datastore</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataStore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">air_monitor.utils.nearest_stations</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_nearest_stations</span><span class="p">,</span> <span class="n">get_nearest_stations_by_coords</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">air_monitor.utils.logic</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_detector_id_by_indicator</span><span class="p">,</span> <span class="n">get_measurements_for_detector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taipy.gui</span><span class="w"> </span><span class="kn">import</span> <span class="n">navigate</span>
+
+
+<div class="viewcode-block" id="on_input_change">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.on_input_change">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_input_change</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aktualizuje dane na podstawie wpisanej stacji.</span>
+<span class="sd">    :param state: Obiekt stanu GUI.</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">search_query</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">filtered_locations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">nearest_station_list</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span>
+
+    <span class="n">nearest</span> <span class="o">=</span> <span class="n">get_nearest_stations</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">search_query</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">km</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">stations</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+
+    <span class="c1"># Lista podpowiedzi do selektora</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">filtered_locations</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">]</span>
+
+    <span class="c1"># Pokazuj najbliższych stacji</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">nearest_station_list</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dist</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> km - </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">dist</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">[:</span><span class="mi">5</span><span class="p">]])</span></div>
+
+
+
+<div class="viewcode-block" id="on_station_select">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.on_station_select">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_station_select</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aktualizuje dane na podstawie wybranej stacji.</span>
+<span class="sd">    :param state: Obiekt stanu GUI.</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selected_name</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">selected_station</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">search_query</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># Dopisz pierwsze słowo z nazwy stacji jeśli nie ma query</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">search_query</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">selected_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+        <span class="n">nearest</span> <span class="o">=</span> <span class="n">get_nearest_stations</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">km</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">stations</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(((</span><span class="n">dist</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">dist</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">nearest</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">selected_name</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">dist</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">match</span>
+            <span class="k">for</span> <span class="n">s_name</span><span class="p">,</span> <span class="n">s_id</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">long</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s_name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">station_data</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Wybrana stacja: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Współrzędne: </span><span class="si">{</span><span class="n">lat</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">long</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Odległość od wyszukanej lokalizacji (&#39;</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&#39;): </span><span class="si">{</span><span class="n">dist</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> km&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">filtered_locations</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">]</span>
+
+                    <span class="c1"># Pokazuj najbliższe stacje</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">nearest_station_list</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dist</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> km - </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">dist</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">[:</span><span class="mi">5</span><span class="p">]]</span>
+                    <span class="k">return</span>
+    <span class="c1"># Fallback: bez query albo nie znaleziono dystansu</span>
+    <span class="k">for</span> <span class="n">s_name</span><span class="p">,</span> <span class="n">s_id</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">long</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s_name</span> <span class="o">==</span> <span class="n">selected_name</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">station_data</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Wybrana stacja: </span><span class="si">{</span><span class="n">s_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Współrzędne: </span><span class="si">{</span><span class="n">lat</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">long</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(Brak danych o odległości – wpisz poprawną lokalizację)&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="n">state</span><span class="o">.</span><span class="n">station_data</span> <span class="o">=</span> <span class="s2">&quot;Nie znaleziono danych.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="on_station_change">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.on_station_change">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_station_change</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obsługuje zmianę wybranej stacji.</span>
+<span class="sd">    :param state: Obiekt stanu GUI.</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">station_name</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">selected_station</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">available_detectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;indicator&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">station_detector_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">station_name</span><span class="p">,</span> <span class="p">[])]</span>
+
+    <span class="n">state</span><span class="o">.</span><span class="n">selected_detector</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">available_detectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">available_detectors</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="c1"># Aktualizacja wykresu po zmianie stacji</span>
+    <span class="n">on_detector_change</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="on_detector_change">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.on_detector_change">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_detector_change</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aktualizuje wykres na podstawie wybranego detektora.</span>
+<span class="sd">    :param state: Obiekt stanu GUI.</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">station_name</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">selected_station</span>
+    <span class="n">selected_indicator</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">selected_detector</span>
+    <span class="n">station_detector_map</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">station_detector_map</span>
+    <span class="c1"># Pobierz odpowiedni detector_id</span>
+    <span class="n">detector_id</span> <span class="o">=</span> <span class="n">get_detector_id_by_indicator</span><span class="p">(</span><span class="n">station_name</span><span class="p">,</span> <span class="n">selected_indicator</span><span class="p">,</span> <span class="n">station_detector_map</span><span class="p">)</span>
+
+    <span class="c1"># Pobierz dane pomiarowe dla tego detektora</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">get_measurements_for_detector</span><span class="p">(</span><span class="n">detector_id</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span>
+
+    <span class="c1"># Jeśli brak danych, zwróć pusty wykres -&gt; TO DO zwróć info o braku danych lub załaduj starsza dane</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">display_figure</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Brak danych w danym dniu&quot;</span><span class="p">,</span>
+            <span class="n">xref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">])</span>
+
+    <span class="n">max_row</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span>
+    <span class="n">min_row</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()]</span>
+    <span class="n">srednia</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="c1"># Trend z numpy.polyfit</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">9</span>  <span class="c1"># timestamp w sekundach</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">trend_line</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">intercept</span>
+
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="c1"># Wszystkie wartości</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
+        <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">detector_id</span><span class="p">),</span>
+        <span class="c1"># showlegend=False,</span>
+
+    <span class="p">))</span>
+    <span class="c1"># Min</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">min_row</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]],</span>
+        <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">min_row</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;#00a05d&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;triangle-down&quot;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Min&quot;</span>
+    <span class="p">))</span>
+    <span class="c1"># Max</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">max_row</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]],</span>
+        <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">max_row</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;#d00000&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;triangle-up&quot;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Max&quot;</span>
+    <span class="p">))</span>
+    <span class="c1"># Średnia</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span>
+        <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">srednia</span><span class="p">,</span> <span class="n">srednia</span><span class="p">],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Średnia&quot;</span>
+    <span class="p">))</span>
+    <span class="c1"># Linia trendu</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">trend_line</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;brown&quot;</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s2">&quot;dot&quot;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Trend&quot;</span>
+    <span class="p">))</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Wykres dla detektora: </span><span class="si">{</span><span class="n">selected_indicator</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">detector_id</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Data pomiaru&quot;</span><span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Wartość&quot;</span><span class="p">)</span>
+
+    <span class="n">state</span><span class="o">.</span><span class="n">display_figure</span> <span class="o">=</span> <span class="n">figure</span></div>
+
+
+
+<div class="viewcode-block" id="menu_option_selected">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.menu_option_selected">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">menu_option_selected</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obsługuje wybór opcji menu i nawigację do strony.</span>
+
+<span class="sd">    :param state: object</span>
+<span class="sd">    :param id: any</span>
+<span class="sd">    :param payload: dict</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">page_name</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">navigate</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">page_name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="reload_data">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.reload_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reload_data</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Przeładowuje dane w DataStore i ustawia powiadomienie.</span>
+
+<span class="sd">    :param state: object</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DataStore</span><span class="p">()</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">notification</span> <span class="o">=</span> <span class="s2">&quot;Dane zostały przeładowane.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="on_slider_change">
+<a class="viewcode-back" href="../../api.html#gui.callbacks.on_slider_change">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_slider_change</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aktualizuje listę najbliższych stacji na podstawie suwaka odległości.</span>
+
+<span class="sd">    :param state: object</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">stations</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">selected_station</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+
+        <span class="c1"># Najbliższe stacje w promieniu x km</span>
+        <span class="n">nearest</span> <span class="o">=</span> <span class="n">get_nearest_stations_by_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">km</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span>
+
+        <span class="n">state</span><span class="o">.</span><span class="n">nearest_station_list</span> <span class="o">=</span> <span class="n">nearest</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">filtered_locations</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">]</span>
+
+
+        <span class="n">state</span><span class="o">.</span><span class="n">nearest_station_list</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dist</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> km - </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">dist</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">[:</span><span class="mi">5</span><span class="p">]])</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">station_data</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Stacje w promieniu </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">km</span><span class="si">}</span><span class="s2"> km:&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">AirAware</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, marcela-os.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

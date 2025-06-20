@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>air_monitor.utils.database &#8212; AirAware v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=e160b93e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for air_monitor.utils.database</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Dostęp do bazy danych (fetch functions)&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<div class="viewcode-block" id="fetch_stations">
+<a class="viewcode-back" href="../../../api.html#air_monitor.utils.database.fetch_stations">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_stations</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pobiera wszystkie stacje z bazy danych.</span>
+<span class="sd">    :return: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;air_monitor/database/air.db&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">all_stations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT name, station_id, lat, long FROM stations&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">all_stations</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="fetch_detectors">
+<a class="viewcode-back" href="../../../api.html#air_monitor.utils.database.fetch_detectors">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_detectors</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pobiera wszystkie detektory z bazy danych.</span>
+<span class="sd">    :return: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;air_monitor/database/air.db&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">all_detectors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT station_id, detector_id, indicator, symbol FROM detectors&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">all_detectors</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="fetch_measurements">
+<a class="viewcode-back" href="../../../api.html#air_monitor.utils.database.fetch_measurements">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_measurements</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pobiera wszystkie pamiary z bazy danych.</span>
+<span class="sd">    :return: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;air_monitor/database/air.db&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">all_measurements</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT detector_id, date, value  FROM measurements&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">all_measurements</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="fetch_latest_or_today_aq_index">
+<a class="viewcode-back" href="../../../api.html#air_monitor.utils.database.fetch_latest_or_today_aq_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_latest_or_today_aq_index</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pobiera pomiar indexLevelName dla każdej stacji:</span>
+<span class="sd">    - z dzisiejszej daty i najpóźniejszej godziny, jeśli jest,</span>
+<span class="sd">    - lub jeśli nie ma, to z najnowszej dostępnej daty i godziny.</span>
+<span class="sd">    :return: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    WITH today_data AS (</span>
+<span class="s2">        SELECT station_id, MAX(stCalcDate) as max_date</span>
+<span class="s2">        FROM aq_index</span>
+<span class="s2">        WHERE DATE(stCalcDate) = DATE(&#39;now&#39;)</span>
+<span class="s2">        GROUP BY station_id</span>
+<span class="s2">    ),</span>
+<span class="s2">    latest_data AS (</span>
+<span class="s2">        SELECT station_id, MAX(stCalcDate) as max_date</span>
+<span class="s2">        FROM aq_index</span>
+<span class="s2">        GROUP BY station_id</span>
+<span class="s2">    ),</span>
+<span class="s2">    preferred_dates AS (</span>
+<span class="s2">        SELECT</span>
+<span class="s2">            latest_data.station_id,</span>
+<span class="s2">            COALESCE(today_data.max_date, latest_data.max_date) as chosen_date</span>
+<span class="s2">        FROM latest_data</span>
+<span class="s2">        LEFT JOIN today_data ON latest_data.station_id = today_data.station_id</span>
+<span class="s2">    )</span>
+<span class="s2">    SELECT a.station_id, a.index_id, a.indexLevelName</span>
+<span class="s2">    FROM aq_index a</span>
+<span class="s2">    JOIN preferred_dates p ON a.station_id = p.station_id AND a.stCalcDate = p.chosen_date</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;air_monitor/database/air.db&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AirAware</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#module-air_monitor.utils">Air Monitor - Utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, marcela-os.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

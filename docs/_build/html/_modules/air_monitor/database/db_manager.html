@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>air_monitor.database.db_manager &#8212; AirAware v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=e160b93e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for air_monitor.database.db_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+
+
+<div class="viewcode-block" id="create_db">
+<a class="viewcode-back" href="../../../api.html#air_monitor.database.db_manager.create_db">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_db</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funkcja sprawdza czy tabela o podanej nazwie istnieje a jeśli nie to tworzy ją.</span>
+<span class="sd">    :param c: sqlite3.Cursor</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE IF NOT EXISTS stations (</span>
+<span class="s2">            station_id INTEGER PRIMARY KEY,</span>
+<span class="s2">            code TEXT,</span>
+<span class="s2">            name TEXT,</span>
+<span class="s2">            lat REAL,</span>
+<span class="s2">            long REAL,</span>
+<span class="s2">            city_name TEXT,</span>
+<span class="s2">            city_id INTEGER,</span>
+<span class="s2">            commune_name TEXT,</span>
+<span class="s2">            district_name TEXT,</span>
+<span class="s2">            province_name TEXT,</span>
+<span class="s2">            street_name TEXT</span>
+<span class="s2">        )</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE IF NOT EXISTS detectors (</span>
+<span class="s2">            detector_id INTEGER PRIMARY KEY AUTOINCREMENT,</span>
+<span class="s2">            station_id INTEGER,</span>
+<span class="s2">            indicator TEXT NOT NULL,</span>
+<span class="s2">            symbol TEXT NOT NULL,</span>
+<span class="s2">            code TEXT NOT NULL,</span>
+<span class="s2">            factor_id INTEGER NOT NULL,</span>
+<span class="s2">            FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE</span>
+<span class="s2">        )</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE IF NOT EXISTS measurements (</span>
+<span class="s2">            id INTEGER PRIMARY KEY AUTOINCREMENT,</span>
+<span class="s2">            position_code TEXT,</span>
+<span class="s2">            date TEXT,</span>
+<span class="s2">            value REAL,</span>
+<span class="s2">            detector_id INTEGER,</span>
+<span class="s2">            FOREIGN KEY (detector_id) REFERENCES detector(id) ON DELETE CASCADE,</span>
+<span class="s2">            UNIQUE(date, detector_id)</span>
+<span class="s2">        )</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE IF NOT EXISTS aq_index (</span>
+<span class="s2">            station_id INTEGER,</span>
+<span class="s2">            index_id INTEGER,</span>
+<span class="s2">            indexLevelName TEXT,</span>
+<span class="s2">            stCalcDate TEXT,</span>
+<span class="s2">            stSourceDataDate TEXT,</span>
+<span class="s2">            stIndexCrParam TEXT,</span>
+<span class="s2">            FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE,</span>
+<span class="s2">            UNIQUE(stSourceDataDate, station_id)</span>
+<span class="s2">        )</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE IF NOT EXISTS aq_indexParam (</span>
+<span class="s2">            station_id INTEGER,</span>
+<span class="s2">            param_name TEXT,</span>
+<span class="s2">            calc_date TEXT,</span>
+<span class="s2">            source_date TEXT,</span>
+<span class="s2">            index_level_id INTEGER,</span>
+<span class="s2">            index_level_name TEXT,</span>
+<span class="s2">            FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE,</span>
+<span class="s2">            UNIQUE(source_date, station_id)</span>
+<span class="s2">        )</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The database has been created.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="save_to_db">
+<a class="viewcode-back" href="../../../api.html#air_monitor.database.db_manager.save_to_db">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_to_db</span><span class="p">(</span><span class="n">stations</span><span class="p">,</span> <span class="n">detectors</span><span class="p">,</span> <span class="n">measurements</span><span class="p">,</span> <span class="n">aq_index</span><span class="p">,</span> <span class="n">cursor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Zapisuje dane pobrane z API do bazy SQLite.</span>
+<span class="sd">    :param stations: list[Stations]</span>
+<span class="sd">    :param detectors: list[Detectors]</span>
+<span class="sd">    :param measurements: list[Measurements]</span>
+<span class="sd">    :param aq_index: list[AQIndex]</span>
+<span class="sd">    :param cursor: sqlite3.Cursor</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#--- Wstawianie stacji ---</span>
+    <span class="n">save_stations</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">stations</span><span class="p">)</span>
+    <span class="c1"># --- Wstawianie indeksu jakości powietrza ---</span>
+    <span class="n">save_aq_index</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">aq_index</span><span class="p">)</span>
+    <span class="c1"># --- Wstawianie parametrów indeksu jakości powietrza ---</span>
+    <span class="n">save_aq_index_param</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">aq_index</span><span class="p">)</span>
+    <span class="c1"># --- Wstawianie sensorów ---</span>
+    <span class="n">save_detectors_and_measurements</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">detectors</span><span class="p">,</span> <span class="n">measurements</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The data was saved to the database.&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="save_stations">
+<a class="viewcode-back" href="../../../api.html#air_monitor.database.db_manager.save_stations">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_stations</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">stations</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funkcja zapisuje dane pojedynczej stacji do tabeli `stations`.</span>
+<span class="sd">    :param cursor: sqlite3.Cursor</span>
+<span class="sd">    :param stations: list zawierający dane stacji</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    INSERT OR REPLACE INTO stations</span>
+<span class="s2">                    (station_id, code, name, lat, long, city_name, city_id, commune_name, district_name, province_name, street_name)</span>
+<span class="s2">                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</span>
+<span class="s2">                &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">commune</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">commune</span><span class="o">.</span><span class="n">district</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">commune</span><span class="o">.</span><span class="n">province</span><span class="p">,</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">street</span><span class="p">,</span>
+        <span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="save_aq_index">
+<a class="viewcode-back" href="../../../api.html#air_monitor.database.db_manager.save_aq_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_aq_index</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">aq_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funkcja zapisuje indeks jakości powietrza do tabeli `aq_index`.</span>
+<span class="sd">    :param cursor: sqlite3.Cursor</span>
+<span class="sd">    :param aq_data: list zawierający dane indeksu jakości powietrza</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">aq_index</span> <span class="ow">in</span> <span class="n">aq_data</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            INSERT OR IGNORE INTO aq_index</span>
+<span class="s2">            (station_id, index_id, indexLevelName, stCalcDate, stSourceDataDate, stIndexCrParam)</span>
+<span class="s2">            VALUES (?, ?, ?, ?, ?, ?)</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span>
+            <span class="n">aq_index</span><span class="o">.</span><span class="n">station_id</span><span class="p">,</span>
+            <span class="n">aq_index</span><span class="o">.</span><span class="n">value_index</span><span class="p">,</span>
+            <span class="n">aq_index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">aq_index</span><span class="o">.</span><span class="n">calc_date</span><span class="p">,</span>
+            <span class="n">aq_index</span><span class="o">.</span><span class="n">source_data_date</span><span class="p">,</span>
+            <span class="n">aq_index</span><span class="o">.</span><span class="n">critical_pollution_code</span>
+        <span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="save_aq_index_param">
+<a class="viewcode-back" href="../../../api.html#air_monitor.database.db_manager.save_aq_index_param">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_aq_index_param</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">aq_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funkcja zapisuje parametry indeksu jakości powietrza do tabeli `aq_indexParam`.</span>
+<span class="sd">    :param cursor: sqlite3.Cursor</span>
+<span class="sd">    :param aq_data: list zawierający dane indeksu jakości powietrza</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">aq_index</span> <span class="ow">in</span> <span class="n">aq_data</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">aq_index</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                  INSERT OR IGNORE INTO aq_indexParam (station_id, param_name, calc_date, source_date, index_level_id, index_level_name)</span>
+<span class="s2">                  VALUES (?, ?, ?, ?, ?, ?)</span>
+<span class="s2">                  &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span>
+                <span class="n">aq_index</span><span class="o">.</span><span class="n">station_id</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">calc_date</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">source_date</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">index_value</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">cat_name</span>
+            <span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="save_detectors_and_measurements">
+<a class="viewcode-back" href="../../../api.html#air_monitor.database.db_manager.save_detectors_and_measurements">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_detectors_and_measurements</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">detectors</span><span class="p">,</span> <span class="n">measurements</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funkcja zapisuje parametry czujników oraz odpowiadającym im pomiarom do tabel `detector`. i `measurement`.</span>
+<span class="sd">    :param cursor: sqlite3.Cursor</span>
+<span class="sd">    :param detectors: list zawierający dane czujników</span>
+<span class="sd">    :param measurements: list zawierający dane pomiarowe z czujników</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">detector_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">detector</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            INSERT OR REPLACE INTO detectors</span>
+<span class="s2">            (detector_id, station_id, indicator, symbol, code, factor_id)</span>
+<span class="s2">            VALUES (?, ?, ?, ?, ?, ?)</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">sensor_id</span><span class="p">,</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">station_id</span><span class="p">,</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">formula</span><span class="p">,</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">param_id</span><span class="p">,</span>
+        <span class="p">))</span>
+        <span class="n">detector_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">detector</span><span class="o">.</span><span class="n">sensor_id</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">measurement</span><span class="o">.</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">detector_ids</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detector ID </span><span class="si">{</span><span class="n">measurement</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> not found in detectors — skipping&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">measurement</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                INSERT OR IGNORE INTO measurements (position_code, date, value, detector_id)</span>
+<span class="s2">                VALUES (?, ?, ?, ?)</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">date_value</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">measurement</span><span class="o">.</span><span class="n">key</span>
+            <span class="p">))</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AirAware</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#module-air_monitor.api_client">Air Monitor - API Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#module-air_monitor.database">Air Monitor - Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#module-air_monitor.models">Air Monitor – Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#module-air_monitor.tests">Air Monitor - Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#module-air_monitor.utils">Air Monitor - Utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, marcela-os.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

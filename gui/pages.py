@@ -62,7 +62,6 @@ def create_gui():
             tgb.chart(figure="{display_figure}")
             with tgb.layout("5 5 5 5 5"):
                 tgb.image("assets/logo.png", width="3vw")
-                tgb.text("Test")
     # Strona 2
     with tgb.Page(route="/page2") as page2:
         with tgb.part(class_name="container text-center"):
