@@ -3,6 +3,16 @@ from air_monitor.utils.helpers import safe_get
 
 
 def get_aq_index_data(session, station_id, base_url):
+    """
+    Pobiera dane indeksu jakości powietrza dla podanej stacji z API GIOŚ.
+
+    :param session: requests.Session
+    :param station_id: id stacji pomiarowej
+    :param base_url:  url GIOŚ
+    :return: dict
+    """
+
+    # na potrzeby edukacyjne pobieranie wszystkich stron na raz
     endpoint = f'{base_url}/pjp-api/v1/rest/aqindex/getIndex/{station_id}?size=500'
     try:
         response = session.get(endpoint, timeout=10)

@@ -1,4 +1,8 @@
 class Sensor:
+    """
+    Klasa reprezentuje sensor przypisany do stacji i parametru pomiarowego.
+    """
+
     def __init__(self, sensor_id, station_id, param):
         self.__sensor_id = sensor_id
         self.__station_id = station_id

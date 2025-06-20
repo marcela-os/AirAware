@@ -10,6 +10,7 @@ def get_sensors_data(session, station_id, base_url):
     :param base_url: url GIOŚ
     :return: dict
     """
+
     endpoint = f'{base_url}/pjp-api/v1/rest/station/sensors/{station_id}'
     try:
         response = session.get(endpoint, timeout=5)

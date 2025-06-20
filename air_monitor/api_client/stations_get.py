@@ -9,6 +9,7 @@ def get_stations_data(session, base_url):
     :param base_url: url GIOŚ
     :return: dict
     """
+    # na potrzeby edukacyjne pobieranie wszystkich stron na raz
     endpoint = f'{base_url}/pjp-api/v1/rest/station/findAll?size=300'
     try:
         response = session.get(endpoint, timeout=5)

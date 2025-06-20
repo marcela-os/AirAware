@@ -7,19 +7,19 @@ from geopy import distance
 # Kontekst SSL z użyciem certyfikatów z certifi
 ctx = ssl.create_default_context(cafile=certifi.where())
 geolocator = Nominatim(user_agent="air_quality_app_Marcelina", ssl_context=ctx)
-# error_message_location = ""
 location = None
-
 
 def get_nearest_stations(description, max_distance_km, stations_data, state):
     """
-    Returns a list of measuring stations within a specified distance from the specified location.
+    Zwraca listę stacji pomiarowych w określonej odległości od lokalizacji.
 
-    :param description: Description of location (e.g. ‘Poznań, market square’)
-    :param max_distance_km: Maximum distance in kilometres (float)
-    :param stations_data: List of dict with stations, each containing ‘gegrLat’, ‘gegrLon’ and ‘stationName’
-    :return: List of tuples (distance_km, station_name) sorted in ascending order of distance
+    :param description: str
+    :param max_distance_km: float
+    :param stations_data: list
+    :return: list
     """
+
+
     try:
         location = geolocator.geocode(description, timeout=10)
     except Exception as e:
@@ -42,10 +42,15 @@ def get_nearest_stations(description, max_distance_km, stations_data, state):
     return sorted(stations, key=lambda value: value[0])
 
 
-# new = get_nearest_stations("Kłodzko, ul. Szkolna", 200, wszystkie_stacje_pomiarowe)
-# print(new)
-
 def get_nearest_stations_by_coords(location_coords, max_distance_km, stations_data):
+    """
+    Znajduje stacje w określonej odległości od podanych współrzędnych.
+    :param location_coords: tuple
+    :param max_distance_km: float
+    :param stations_data: list
+    :return: list
+    """
+
     stations = []
     for item in stations_data:
         lat, lon, name = float(item[2]), float(item[3]), item[0]

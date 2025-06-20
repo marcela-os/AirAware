@@ -2,7 +2,6 @@
 Funkcje pomocnicze
 """
 
-
 def safe_get(data, field):
     """
     Funkcja sprawdza wartość z obiektu typu dict czy nie jest None, pustą listą,

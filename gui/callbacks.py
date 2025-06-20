@@ -10,14 +10,12 @@ from air_monitor.utils.logic import get_detector_id_by_indicator, get_measuremen
 from taipy.gui import navigate
 
 
-# Zmiana inputa
 def on_input_change(state):
     """
     Aktualizuje dane na podstawie wpisanej stacji.
     :param state: Obiekt stanu GUI.
     :return: None
     """
-
 
     if not state.search_query.strip():
         state.filtered_locations = []
@@ -32,18 +30,17 @@ def on_input_change(state):
     # Pokazuj najbliższych stacji
     state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
 
-# Zmiana selektora
+
 def on_station_select(state):
     """
     Aktualizuje dane na podstawie wybranej stacji.
     :param state: Obiekt stanu GUI.
     :return: None
     """
-    print(f"On select: {state.selected_station}")
 
     selected_name = state.selected_station
     query = state.search_query.strip()
-    print(f"Query: {query}")
+
     # Dopisz pierwsze słowo z nazwy stacji jeśli nie ma query
     if not state.search_query.strip():
         query = selected_name.strip().split()[0]
@@ -77,20 +74,22 @@ def on_station_select(state):
 
     state.station_data = "Nie znaleziono danych."
 
+
 def on_station_change(state):
     """
     Obsługuje zmianę wybranej stacji.
     :param state: Obiekt stanu GUI.
     :return: None
     """
+
     station_name = state.selected_station
-    # state.available_detectors = [d["indicator"] for d in station_detector_map[station_name]]
     state.available_detectors = [d["indicator"] for d in state.station_detector_map.get(station_name, [])]
 
     state.selected_detector = state.available_detectors[0] if state.available_detectors else None
 
     # Aktualizacja wykresu po zmianie stacji
     on_detector_change(state)
+
 
 def on_detector_change(state):
     """
@@ -181,15 +180,38 @@ def on_detector_change(state):
 
 
 def menu_option_selected(state, id, payload):
+    """
+    Obsługuje wybór opcji menu i nawigację do strony.
+
+    :param state: object
+    :param id: any
+    :param payload: dict
+    :return: None
+    """
+
     page_name = payload["args"][0]
     navigate(state, to=page_name)
 
+
 def reload_data(state):
+    """
+    Przeładowuje dane w DataStore i ustawia powiadomienie.
+
+    :param state: object
+    :return: None
+    """
+
     DataStore().reload()
     state.notification = "Dane zostały przeładowane."
 
 
 def on_slider_change(state):
+    """
+    Aktualizuje listę najbliższych stacji na podstawie suwaka odległości.
+
+    :param state: object
+    :return: None
+    """
 
     result = [(lat, lon) for name, _, lat, lon in state.stations if name == state.selected_station]
 

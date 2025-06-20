@@ -2,11 +2,19 @@ from datetime import datetime, date, time
 
 
 class DateFormat(Exception):
+    """
+    Klasa zgłasza wyjątek przy niepoprawnym formacie daty
+    """
+
     def __init__(self, date_value):
         super().__init__(f'Incorrect date format: {date_value}')
 
 
 class AqIndex:
+    """
+    Klasa reprezentuje indeks jakości powietrza dla stacji pomiarowej.
+    """
+
     def __init__(self, station_id, value_index, name, calc_date, source_data_date, critical_pollution_code, param):
         self.__station_id = station_id
         self.__value_index = float(value_index) if value_index is not None else None

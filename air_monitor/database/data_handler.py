@@ -16,6 +16,7 @@ def get_data_handler():
     :raises RuntimeError:
         - Gdy wystąpi błąd połączenia z bazą danych lub problem z danymi z API.
     """
+
     try:
         with sqlite3.connect(database_path) as connection:
             c = connection.cursor()

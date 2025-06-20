@@ -46,7 +46,7 @@ def get_measurements_for_detector(detector_id, measurements):
     :param measurements: list
     :return: list
     """
-    # TO DO sprawdź czy są pomiary bo mzoe wcale nie pokazywać detektorów?
+
     # Dane odpowiadające danemu detektorowi
     ms_data = [(date, value) for d_id, date, value in measurements if d_id == detector_id]
 

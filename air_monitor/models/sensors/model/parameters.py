@@ -1,4 +1,8 @@
 class Param:
+    """
+    Klasa reprezentuje parametr pomiarowy z nazwą, wzorem, kodem i identyfikatorem.
+    """
+
     def __init__(self, name, formula, code, param_id):
         self.__name = name
         self.__formula = formula

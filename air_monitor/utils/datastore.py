@@ -5,6 +5,10 @@ from air_monitor.utils.database import fetch_stations, fetch_measurements, fetch
 # Implementacja singletona
 # Czy to jest dobre użycie singletona?
 class Singleton(type):
+    """
+    Metaklasa zapewniająca wzorzec singleton.
+    """
+
     _instances = {}
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -12,6 +16,10 @@ class Singleton(type):
         return cls._instances[cls]
 
 class DataStore(metaclass=Singleton):
+    """
+    Klasa reprezentuje magazyn danych, ładując i przechowując dane pomiarowe i stacje.
+    """
+
     def __init__(self):
         self._load_data()
 

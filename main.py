@@ -1,7 +1,5 @@
 import taipy as tp
 import plotly.graph_objs as go
-from datetime import datetime
-from taipy.gui import navigate
 from gui import callbacks
 from types import SimpleNamespace
 from chart import generate_map
@@ -93,4 +91,4 @@ if __name__ == "__main__":
     gui = tp.Gui(pages=pages)
 
     gui.run(title="Air Monitor",
-            use_reloader=True, port="auto", dark_mode=False)
+            use_reloader=False, port="auto", dark_mode=False)

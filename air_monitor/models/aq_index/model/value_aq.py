@@ -2,11 +2,19 @@ from datetime import datetime, date, time
 
 
 class DateFormat(Exception):
+    """
+    Klasa zgłasza wyjątek przy niepoprawnym formacie daty
+    """
+
     def __init__(self, date_value):
         super().__init__(f'Incorrect date format: {date_value}')
 
 
 class ValueAQ:
+    """
+    Klasa reprezentuje indeks jakości powietrza dla wybranego parametru.
+    """
+
     def __init__(self, name, source_date, calc_date, index_value, cat_name):
         self.__name = name
         if source_date is not None:

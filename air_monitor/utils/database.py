@@ -41,7 +41,9 @@ def fetch_latest_or_today_aq_index():
     Pobiera pomiar indexLevelName dla każdej stacji:
     - z dzisiejszej daty i najpóźniejszej godziny, jeśli jest,
     - lub jeśli nie ma, to z najnowszej dostępnej daty i godziny.
+    :return: list
     """
+
     query = """
     WITH today_data AS (
         SELECT station_id, MAX(stCalcDate) as max_date

@@ -7,6 +7,12 @@ from gui.callbacks import (on_input_change, on_station_change,
                            reload_data, menu_option_selected, on_slider_change)
 
 def create_gui():
+    """
+    Tworzy i zwraca słownik stron GUI zdefiniowanych w aplikacji.
+
+    :return: dict stron GUI
+    """
+
     # Tworzenie strony GUI
     # Strona Home
     with tgb.Page(route="/") as home:

@@ -105,6 +105,7 @@ def save_stations(cursor, stations):
     :param stations: list zawierający dane stacji
     :return: None
     """
+
     for station in stations:
         cursor.execute("""
                     INSERT OR REPLACE INTO stations
@@ -131,6 +132,7 @@ def save_aq_index(cursor, aq_data):
     :param aq_data: list zawierający dane indeksu jakości powietrza
     :return: None
     """
+
     for aq_index in aq_data:
         cursor.execute("""
             INSERT OR IGNORE INTO aq_index
@@ -152,6 +154,7 @@ def save_aq_index_param(cursor, aq_data):
     :param aq_data: list zawierający dane indeksu jakości powietrza
     :return: None
     """
+
     for aq_index in aq_data:
         for key, value in aq_index.param.items():
             cursor.execute("""
@@ -174,6 +177,7 @@ def save_detectors_and_measurements(cursor, detectors, measurements):
     :param measurements: list zawierający dane pomiarowe z czujników
     :return: None
     """
+
     detector_ids = set()
     for detector in detectors:
         cursor.execute("""
@@ -204,14 +208,3 @@ def save_detectors_and_measurements(cursor, detectors, measurements):
                 value.value,
                 measurement.key
             ))
-
-
-# if __name__ == '__main__':
-#     # create_stations()
-#     with sqlite3.connect("air.db") as connection:
-#         c = connection.cursor()
-#         tables = ['measurements', 'aq_index', 'aq_indexParam', 'detectors', 'stations']
-#         print(tables)
-#         for table in tables:
-#             c.execute(f'DROP TABLE IF EXISTS "{table}"')
-#             print("Usuniete")
