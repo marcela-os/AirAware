@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
 
     # Uruchomienie aplikacji
-    # get_data_handler()
+    get_data_handler()
     # Uruchomienie GUI
     pages = create_gui()
     gui = tp.Gui(pages=pages)
