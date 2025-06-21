@@ -30,13 +30,14 @@ def create_gui():
                                  on_change=on_station_select, width="500px")
                 with tgb.part(class_name="container text-center"):
                     tgb.text("{error_message_location}")
-                    tgb.text("Wybierz odległość", mode="md")
-                    tgb.slider(value="{km}", max=200, on_change=on_slider_change, step=10, change_delay=10, propagate=True)
-                    tgb.text("{station_data}")
+                    tgb.text("Odległość od wybranego punktu ({km} km)", mode="md")
+                    tgb.slider(value="{km}", max=200, on_change=on_slider_change, step=10, change_delay=10, propagate=True, text_anchor="top")
                     tgb.html("br")
+                    tgb.input("{station_data}", class_name="fullwidth", active=False, multiline=True)
+                    tgb.input("{nearest_station_list}", class_name="fullwidth", active=False, multiline=True)
+                    # tgb.text("{nearest_station_list}")
                     tgb.html("br")
-                    tgb.text("{nearest_station_list}")
-                    tgb.button("🔁 Odśwież dane", on_action=reload_data)
+                    tgb.button("Odśwież dane", on_action=reload_data)
                     tgb.text("{notification}")
 
     # Strona 1

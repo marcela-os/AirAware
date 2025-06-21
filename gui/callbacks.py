@@ -55,12 +55,13 @@ def on_station_select(state):
                     state.station_data = (
                         f"Wybrana stacja: {name}\n"
                         f"Współrzędne: {lat}, {long}\n"
-                        f"Odległość od wyszukanej lokalizacji ('{query}'): {dist:.2f} km"
+                        f"Odległość od wyszukanej lokalizacji ('{query}'): {dist:.2f} km\n\n"
+                        f"Najbliższe stacje:"
                     )
                     state.filtered_locations = [entry[1] for entry in nearest]
 
                     # Pokazuj najbliższe stacje
-                    state.nearest_station_list = [f"{dist:.1f} km - {name}" for dist, name in nearest[:5]]
+                    state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
                     return
     # Fallback: bez query albo nie znaleziono dystansu
     for s_name, s_id, lat, long in state.stations:
@@ -203,6 +204,13 @@ def reload_data(state):
 
     DataStore().reload()
     state.notification = "Dane zostały przeładowane."
+    state.km = 20
+    state.search_query = ""
+    state.filtered_locations = state.station_names
+    state.station_data = ""
+    state.nearest_station_list = ""
+    state.notification = ""
+    state.error_message_location = ""
 
 
 def on_slider_change(state):
@@ -226,5 +234,5 @@ def on_slider_change(state):
         state.filtered_locations = [entry[1] for entry in nearest]
 
 
-        state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:5]])
-        state.station_data = f"Stacje w promieniu {state.km} km:"
+        state.nearest_station_list = "\n".join([f"{dist:.1f} km - {name}" for dist, name in nearest[:10]])
+        state.station_data = f"Najbliższe stacje:"

@@ -27,3 +27,16 @@
     height: 60vh;
     overflow-y: auto;
 }
+
+/* Multiline input */
+.css-tqtb8x.Mui-disabled .MuiOutlinedInput-notchedOutline {
+    border-style: none;
+    /*color: black;*/
+}
+
+.css-ksxjes.Mui-disabled {
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+    text-align: center;
+}
+
