@@ -10,3 +10,5 @@ taipy==4.0.3
 tinycss2==1.4.0
 tomli==2.0.1
 yarg==0.1.9
+
+gevent==25.4.1
