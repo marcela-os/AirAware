@@ -1,103 +1,106 @@
+# 🌬 AirAware
 
-## 🌬 AirAware
+**Air-quality monitoring for Poland, built on live data from the Chief Inspectorate of Environmental Protection (GIOŚ).**
 
-App for monitoring air quality in Poland.
-Application using data from the General Inspectorate for Environmental Protection (GIOŚ).
+AirAware fetches real-time measurements from the public GIOŚ REST API, stores them locally and turns them into interactive charts, maps and simple statistics. It also works offline: when the API is unreachable, it falls back to the data saved in its local database.
 
+![AirAware: station search](assets/screenshots/home.png)
 
-## 🛠️ Functions
+---
 
+## ✨ Features
 
-- Fetches real-time air quality measurement data from GIOŚ REST API.
-- Allows searching for monitoring stations by location name or proximity (within a radius in km).
-- Displays air quality index and sensor data on maps.
-- Displays air quality index data and parameters from selected stations.
-- Interactive GUI with multiple pages.
-- Presents data in interactive charts.
-- Provides simple data analysis: minimum, maximum, average, and trends.
-- Uses Singleton pattern to manage and reload data.
-- Handles connection errors gracefully and informs the user accordingly.
-- Falls back to historical data from the local database when no internet connection is available.
-- Modular codebase with clear logical separation (e.g., data fetching, storage, GUI, analysis).
-- Equipped with comprehensive docstrings and unit tests.
+- **Live data** from the GIOŚ REST API: stations, sensors, measurements and the air-quality index.
+- **Find stations near you:** type a place (e.g. *"Poznań dworzec"*) and a radius in km. The app geocodes it and lists stations within that distance (geopy).
+- **Statistics page:** pick a station and a sensor to see the measurement history as an interactive chart, with min, max, average and trend.
+- **Map page:** air-quality index of every station on an interactive map, coloured by category.
+- **Offline mode:** measurements are stored in SQLite. Without a connection the app shows the stored history, and the station search tells the user there is no internet connection.
+- **Clean structure:** API client, data models with converters, storage layer, analysis and GUI kept in separate modules. Shared data is managed by a `DataStore` singleton.
+- **Tested and documented:** 33 unit tests (pytest, API calls mocked) and Sphinx documentation generated from docstrings.
 
+| Statistics | Map |
+|---|---|
+| ![Statistics](assets/screenshots/statistics.png) | ![Map](assets/screenshots/map.png) |
 
+---
 
-## 🚀 Tech Stack
+## 🧱 Tech stack
 
- - [Python 3.12.10](https://www.python.org/downloads/release/python-31210/)
- - SQLite for local data storage
- - Requests for REST API calls
- - Pandas for data manipulation
- - Geopy for geolocation and distance calculations
- - Plotly for charts 
- - GUI framework Taipy
+| Area | Tools |
+|---|---|
+| Language | Python 3.12 |
+| GUI | Taipy 4 |
+| Data | pandas, SQLite |
+| Charts & maps | Plotly |
+| Geolocation | geopy (Nominatim) |
+| HTTP | requests |
+| Tests | pytest, unittest.mock |
+| Docs | Sphinx |
 
+---
 
-##  🧑‍💻 Usage
+## 🗂 Project structure
 
-Select a monitoring station from the full list or filter by city name.
-
-Search stations near a specific location by entering a description (e.g., “Poznań dworzec”) and a radius in km.
-
-View current and historical measurements for selected sensors.
-
-Visualize data with charts and maps.
-
-Perform simple statistical analyses on measurement data (min, max, average, trends).
-
-If live data is unavailable due to connection issues, the app can use stored data in database.
-
-
-## 🏃🏻‍♀️ Installation & run
-
-
-Instalation
-* Clone the repository
-
-```bash
-  git clone https://github.com/marcela-os/AirAware.git
-  
-  cd airaware
+```
+AirAware/
+├── main.py                 # entry point: starts the Taipy app
+├── chart.py                # Plotly map of the air-quality index
+├── gui/                    # Taipy pages and callbacks
+├── air_monitor/
+│   ├── api_client/         # GIOŚ REST API calls
+│   ├── models/             # stations, sensors, measurements, AQ index (+ converters)
+│   ├── database/           # SQLite storage and data handling
+│   ├── utils/              # DataStore singleton, nearest stations, analysis logic
+│   └── tests/              # unit tests
+├── docs/                   # Sphinx documentation
+└── assets/                 # icons and screenshots
 ```
 
-* Install the required dependencies
+---
+
+## 🚀 Getting started
 
 ```bash
-  pip install -r requirements.txt
+git clone https://github.com/marcela-os/AirAware.git
+cd AirAware
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
 ```
 
-* Start the application
+The app opens in your browser. Taipy serves it locally and prints the address in the terminal.
+
+### Run the tests
 
 ```bash
-  python main.py
+python -m pytest air_monitor/tests -v
 ```
 
-
-## 📖 Documentation
-
-
-This project uses [Sphinx](https://www.sphinx-doc.org/) to generate documentation from Python docstrings.
-
-To build the documentation locally
+### Build the documentation
 
 ```bash
-  cd docs
-  make html
+cd docs
+make html                         # Windows: make.bat html
+open _build/html/index.html       # Windows: start _build\html\index.html
 ```
-After building, open the documentation in your web browser
 
-On macOS/Linux
-```bash
-  open _build/html/index.html
-```
-On Windows:
-```bash
-  start _build\html\index.html
-```
-Alternatively, you can manually open the file _build/html/index.html in any browser.
+---
 
+## 🗺 Roadmap
 
-## ˙✧˖° Author ˙✧˖°
+- [ ] **PM2.5 forecast for the next 24 h:** baseline ("tomorrow like today") compared with linear regression, random forest and gradient boosting (scikit-learn), time-based validation, MAE and error analysis, feature importance shown in the dashboard
+- [ ] Forecast served as an API (FastAPI)
+- [ ] Docker image for one-command setup
+- [ ] Online demo
+- [ ] English version of the interface
 
- [@marcelaos](https://github.com/marcela-os)
+---
+
+## 📄 Data source
+
+Air-quality data: [GIOŚ – Główny Inspektorat Ochrony Środowiska](https://powietrze.gios.gov.pl/pjp/content/api), public API.
+
+## 👩‍💻 Author
+
+**Marcelina Migdalski**: [GitHub](https://github.com/marcela-os) · [LinkedIn](https://www.linkedin.com/in/marcelinamigdalski)
